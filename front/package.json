@@ -25,6 +25,6 @@
 
         "start"             : "webpack-dev-server --devtool source-map --port 9002 --content-base ./ -d",
 
-        "build"             : "rm -r -f -d dist/ && env NODE_ENV=production webpack"
+        "build"             : "rm -rf dist/ && env NODE_ENV=production webpack"
     }
 }

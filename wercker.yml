@@ -32,9 +32,10 @@ back-build:
         - script:
             name: prepare container
             code: |
+                mv ./back/lib/* .
+                mv ./back/node_modules .
+                rm -rf ./back
                 rm -rf ./front
-                rm .*
-                mv ./back/* .
 
 
 
@@ -71,7 +72,7 @@ back-deploy:
 
         - script:
             name: generate config from template
-            cwd: topology/kubernetes
+            cwd: back/topology
             code: |
                 cat topology/*.yml | node -e "require('readline').createInterface({input:process.stdin}).on('line', l => console.log( l.replace(/\\$\\{ *(\\w*) *\\}/g, (_,a) => process.env[ a ]||'' )) )" > topology.yml
                 # /!\ this will show sensible informations
@@ -79,7 +80,7 @@ back-deploy:
 
         - kubectl:
             name: rolling update deployment
-            cwd: topology/kubernetes
+            cwd: back/topology
             server: $KUBERNETES_MASTER
             username: $KUBERNETES_USERNAME
             password: $KUBERNETES_PASSWORD
