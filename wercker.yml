@@ -35,6 +35,7 @@ back-build:
                 mv ./back/lib/* .
                 mv ./back/node_modules .
                 mv ./back/topology .
+                mv ./back/package.json .
                 rm -rf ./back
                 rm -rf ./front
 
@@ -75,6 +76,7 @@ back-deploy:
             name: generate config from template
             cwd: back/topology
             code: |
+                cat topology/*.yml
                 cat topology/*.yml | node -e "require('readline').createInterface({input:process.stdin}).on('line', l => console.log( l.replace(/\\$\\{ *(\\w*) *\\}/g, (_,a) => process.env[ a ]||'' )) )" > topology.yml
                 # /!\ this will show sensible informations
                 cat topology.yml
