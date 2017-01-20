@@ -34,6 +34,7 @@ back-build:
             code: |
                 mv ./back/lib/* .
                 mv ./back/node_modules .
+                mv ./back/topology .
                 rm -rf ./back
                 rm -rf ./front
 
