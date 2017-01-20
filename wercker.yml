@@ -76,6 +76,8 @@ back-deploy:
             name: generate config from template
             cwd: back/topology
             code: |
+                ls .
+                ls topology/*.yml
                 cat topology/*.yml
                 cat topology/*.yml | node -e "require('readline').createInterface({input:process.stdin}).on('line', l => console.log( l.replace(/\\$\\{ *(\\w*) *\\}/g, (_,a) => process.env[ a ]||'' )) )" > topology.yml
                 # /!\ this will show sensible informations
