@@ -49,10 +49,10 @@ back-push-container:
 
         - internal/docker-push:
             name: push container
-            repository: eu.gcr.io/$GCR_PROJECT/core
+            repository: eu.gcr.io/$GC_PROJECT/core
             registry: https://gcr.io
             username : _json_key
-            password: $GCR_JSON_KEY_FILE
+            password: $GC_JSON_KEY_FILE
             tag: $IMAGE_TAG $WERCKER_GIT_COMMIT
             working-dir: /pipeline/source
             cmd: node ./lib/core
