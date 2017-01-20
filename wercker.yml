@@ -32,9 +32,10 @@ back-build:
         - script:
             name: prepare container
             code: |
+                mv ./back/lib/* .
+                mv ./back/node_modules .
+                rm -rf ./back
                 rm -rf ./front
-                rm .*
-                mv ./back/* .
 
 
 
@@ -48,10 +49,10 @@ back-push-container:
 
         - internal/docker-push:
             name: push container
-            repository: eu.gcr.io/$GCR_PROJECT/core
+            repository: eu.gcr.io/$GC_PROJECT/core
             registry: https://gcr.io
             username : _json_key
-            password: $GCR_JSON_KEY_FILE
+            password: $GC_JSON_KEY_FILE
             tag: $IMAGE_TAG $WERCKER_GIT_COMMIT
             working-dir: /pipeline/source
             cmd: node ./lib/core
@@ -71,7 +72,6 @@ back-deploy:
 
         - script:
             name: generate config from template
-            cwd: topology/kubernetes
             code: |
                 cat topology/*.yml | node -e "require('readline').createInterface({input:process.stdin}).on('line', l => console.log( l.replace(/\\$\\{ *(\\w*) *\\}/g, (_,a) => process.env[ a ]||'' )) )" > topology.yml
                 # /!\ this will show sensible informations
@@ -79,7 +79,6 @@ back-deploy:
 
         - kubectl:
             name: rolling update deployment
-            cwd: topology/kubernetes
             server: $KUBERNETES_MASTER
             username: $KUBERNETES_USERNAME
             password: $KUBERNETES_PASSWORD
