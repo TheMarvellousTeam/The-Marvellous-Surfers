@@ -1,0 +1,33 @@
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+    namespace: ${KUBERNETES_NAMESPACE}
+    name: core
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: core
+    strategy:
+        type: RollingUpdate
+    revisionHistoryLimit: 5
+    template:
+        metadata:
+            namespace: ${KUBERNETES_NAMESPACE}
+            name: core
+            labels:
+                app: core
+                version: ${APP_VERSION}
+        spec:
+            containers:
+                -   name: core
+                    image: eu.gcr.io/${GCR_PROJECT}/srv-core:${WERCKER_GIT_COMMIT}
+                    resources:
+                        limits:
+                            cpu: 300m
+                            memory: 400Mi
+                        requests:
+                            cpu: 10m
+                            memory: 60Mi

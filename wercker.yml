@@ -1,166 +1,111 @@
 
-box: node
+box:
+    id: mhart/alpine-node:6
+    cmd: /bin/sh
 
 back-build:
+
+    box:
+        id: mhart/alpine-node:6
+        cmd: /bin/sh
+
     steps:
 
         - script:
-            name: npm install
-            cwd: back/
-            code: env NODE_ENV=dev npm install --quiet && npm list --depth 0  --quiet
-
-        - script:
-            name: print outdated package
-            cwd: back/
-            code: npm outdated --quiet
-
-        - script:
-            name: test
-            cwd: back/
-            code: npm test
-
-        - script:
-            name: build
-            cwd: back/
-            code: npm run build
-
-        - script:
-            name: prepare the container
+            cwd: back
+            name: install dependencies with yarn
             code: |
-                mv ./back/lib ./lib
-                mv ./back/package.json ./package.json
-                ls -A1 | grep -v 'lib\|package.json\|wercker.yml' | xargs rm -rf
-                npm install --quiet --production && npm list --depth 0  --quiet
+                npm install -g yarn --quiet --depth 0
+                export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
+                HOME=$YARN_CACHE yarn --pure-lockfile
 
+        - script:
+            cwd: back
+            name: print outdated package
+            code: yarn outdated
 
+        - script:
+            cwd: back
+            name: build
+            code: yarn run build
+
+        - script:
+            name: prepare container
+            code: |
+                rm -rf ./front
+                rm .*
+                mv ./back/* .
 
 
 back-push-container:
 
+    box:
+        id: mhart/alpine-node:6
+        cmd: /bin/sh
+
     steps:
 
-        - script:
-            name: ls
-            code: |
-                ls -l .
-                echo "node_modules :"
-                ls -l node_modules
-                echo "lib :"
-                find ./lib
-
-        - script:
-            name: prepare gcr key file
-            code: |
-                export GCR_JSON_KEY_FILE2=$(node -e 'console.log(`{"client_email":"${process.env.SPLIT_GCLOUD_MAIL}","private_key":"${process.env.SPLIT_GCLOUD_PRIVATE_KEY}"}`)')
-
-        - script:
-            name: prepare image tag
-            code: |
-                export IMAGE_TAG=$(node -e "console.log(process.env.WERCKER_GIT_BRANCH+'-'+require('./package.json').version+'-'+(new Date()).toISOString().slice(0,-5).replace(/[:-]/g,'_')+'-'+process.env.WERCKER_GIT_COMMIT.slice(0,7))")
-                echo $IMAGE_TAG
-                echo $IMAGE_TAG >> image_tag
-                export IMAGE_MAIN_TAG=$(node -e "console.log(process.env.WERCKER_GIT_BRANCH == 'master' ? 'latest' : 'latest-'+process.env.WERCKER_GIT_BRANCH)")
-
         - internal/docker-push:
-            name: push docker image to gcr
-            repository: $GCR_REPOSITORY
+            name: push container
+            repository: eu.gcr.io/$GCR_PROJECT/core
             registry: https://gcr.io
             username : _json_key
             password: $GCR_JSON_KEY_FILE
-            tag: $IMAGE_TAG
+            tag: $IMAGE_TAG $WERCKER_GIT_COMMIT
             working-dir: /pipeline/source
-            cmd: npm run start
-
-        - internal/docker-push:
-            name: push docker image to gcr with last tag
-            repository: $GCR_REPOSITORY
-            registry: https://gcr.io
-            username : _json_key
-            password: $GCR_JSON_KEY_FILE
-            tag: $IMAGE_MAIN_TAG
-            working-dir: /pipeline/source
-            cmd: npm run start
-
-        - internal/docker-push:
-            name: push docker image to hub.docker
-            username: $DOCKER_HUB_USERNAME
-            password: $DOCKER_HUB_PASSWORD
-            tag: $IMAGE_TAG
-            repository: platane/split-back
-            registry: https://registry.hub.docker.com
-            working-dir: /pipeline/source
-            cmd: npm run start
-
-        - internal/docker-push:
-            name: push docker image to hub.docker with last tag
-            username: $DOCKER_HUB_USERNAME
-            password: $DOCKER_HUB_PASSWORD
-            tag: $IMAGE_MAIN_TAG
-            repository: platane/split-back
-            registry: https://registry.hub.docker.com
-            working-dir: /pipeline/source
-            cmd: npm run start
+            cmd: node ./lib/core
 
 back-deploy:
 
-    box: ubuntu:latest
+    box:
+        id: mhart/alpine-node:6
+        cmd: /bin/sh
 
     steps:
-
-        - install-packages:
-            name: ensure ssh is available
-            packages: openssh-client
-
-        - add-to-known_hosts:
-            hostname: $HOST
+        - script:
+            name: generate version label
+            code: |
+                export APP_VERSION=`node -e "console.log(require('./package.json').version+'-'+process.env.WERCKER_GIT_COMMIT.slice(0,7))"`
+                echo $APP_VERSION
 
         - script:
-            name: create identity file
+            name: generate config from template
+            cwd: topology/kubernetes
             code: |
-                echo $SSH_PRIVATE > ./key
-                chmod 600 ./key
+                cat topology/*.yml | node -e "require('readline').createInterface({input:process.stdin}).on('line', l => console.log( l.replace(/\\$\\{ *(\\w*) *\\}/g, (_,a) => process.env[ a ]||'' )) )" > topology.yml
+                # /!\ this will show sensible informations
+                cat topology.yml
 
-        - add-ssh-key:
-            keyname: SSH
-
-        - script:
-            name: kill and restart docker container
-            code: |
-                ssh -i ./key -l $SSH_USER $HOST 'docker rm -f $(docker ps -a -q) 2> /dev/null ; echo "ok"'
-                ssh -i ./key -l $SSH_USER $HOST "echo 'SPLIT_GCLOUD_PRIVATE_KEY=$SPLIT_GCLOUD_PRIVATE_KEY' > ~/envFile && echo 'SPLIT_GCLOUD_MAIL=$SPLIT_GCLOUD_MAIL' >> ~/envFile && echo 'SPLIT_GCLOUD_PROJECTID=$SPLIT_GCLOUD_PROJECTID' >> ~/envFile"
-                ssh -i ./key -l $SSH_USER $HOST "docker pull platane/split-back:$(cat image_tag) && docker run --env-file ~/envFile -p 80:9011 -d platane/split-back:$(cat image_tag)"
-
-
-        - script:
-            name: clean up identity file
-            code: |
-                rm ./key
+        - kubectl:
+            name: rolling update deployment
+            cwd: topology/kubernetes
+            server: $KUBERNETES_MASTER
+            username: $KUBERNETES_USERNAME
+            password: $KUBERNETES_PASSWORD
+            insecure-skip-tls-verify: true
+            command: apply -f topology.yml --namespace ${KUBERNETES_NAMESPACE}
 
 
 front-build:
     steps:
 
         - script:
-            name: npm install
-            cwd: front/
-            code: env NODE_ENV=dev npm install --quiet && npm list --depth 0  --quiet
-
-        - script:
-            name: prepare env var
+            cwd: front
+            name: install dependencies with yarn
             code: |
-                export NODE_ENV=production
-                export API_HOST=$HOST
-                export API_PORT=80
+                npm install -g yarn --quiet --depth 0
+                export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
+                HOME=$YARN_CACHE yarn --pure-lockfile
 
         - script:
+            cwd: front
             name: print outdated package
-            cwd: front/
-            code: npm outdated --quiet
+            code: yarn outdated
 
         - script:
+            cwd: front
             name: build
-            cwd: front/
-            code: npm run build
+            code: yarn run build
 
 
 front-deploy:
@@ -170,19 +115,29 @@ front-deploy:
     steps:
 
         - script:
-            name: prepare .boto file
-            cwd: front/
+            name: Activate service account
             code: |
-                echo "[Credentials]"            > .boto
-                echo "  gs_access_key_id ="     >> .boto
-                echo "  gs_secret_access_key =" >> .boto
-                echo "[GSUtil]"                 >> .boto
-                echo "  default_project_id ="   >> .boto
+                echo $GC_JSON_KEY_FILE >> secret.json
+                CLOUDSDK_PYTHON_SITEPACKAGES=1 gcloud auth activate-service-account $GC_ACCOUNT --key-file secret.json
 
-        - narinari/gcs-website-deploy:
-            cwd: front/
-            bucket:   $GCS_BUCKET
-            project:  $SPLIT_GCLOUD_PROJECTID
-            access_key_id:    $GCS_ACCESS_KEY_ID
-            secret_access_key:    $GCS_SECRET_ACCESS_KEY
-            dir:  ./dist
+        - script:
+            name: Upload to store
+            code: |
+                # create the bucket
+                gsutil mb -c STANDARD -l EUROPE-WEST1 -p $GC_PROJECT gs://$BUCKET || echo 1
+
+                # sync the folder dist with the bucket ( options -d is for removing from the bucket )
+                gsutil -m rsync -r -d front/dist gs://$BUCKET
+
+                # use gzip with this files
+                gsutil -m cp -r -z html,css,js,xml,txt,json,map,svg front/dist/* gs://$BUCKET
+
+                # set the bucket accessibility
+                gsutil -m acl set -R -a public-read gs://$BUCKET
+
+                # set the bucket index and 404 files
+                gsutil web set -m index.html -e index.html gs://$BUCKET
+
+                # set headers for security purpose
+                # will fail : can only set a restricted set of headers
+                # gsutil setmeta -h "x-frame-options:SAMEORIGIN" gs://$BUCKET/index.html
