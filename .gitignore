@@ -1,0 +1,7 @@
+node_modules
+npm-debug.log
+Thumbs.db
+.tmp
+dist
+lib
+credentials.json

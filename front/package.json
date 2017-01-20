@@ -1,0 +1,26 @@
+{
+    "name": "front",
+    "version": "0.1.0",
+
+    "dependencies": {
+    },
+
+    "devDependencies" : {
+        "babel-cli"             : "~6.18.0",
+        "babel-core"            : "~6.21.0",
+        "babel-loader"          : "~6.2.7",
+        "babel-preset-es2015"   : "~6.18.0",
+        "babel-preset-react"    : "~6.16.0",
+        "babel-preset-stage-1"  : "~6.16.0",
+        "babel-register"        : "~6.18.0",
+        "webpack"               : "~2.2.0",
+        "webpack-dev-server"    : "~2.2.0"
+    },
+
+    "scripts": {
+
+        "start"             : "webpack-dev-server --port 9002 --content-base ./ -d",
+
+        "build"             : "rm -r -f -d dist/ && env NODE_ENV=production webpack"
+    }
+}

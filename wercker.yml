@@ -1,0 +1,188 @@
+
+box: node
+
+back-build:
+    steps:
+
+        - script:
+            name: npm install
+            cwd: back/
+            code: env NODE_ENV=dev npm install --quiet && npm list --depth 0  --quiet
+
+        - script:
+            name: print outdated package
+            cwd: back/
+            code: npm outdated --quiet
+
+        - script:
+            name: test
+            cwd: back/
+            code: npm test
+
+        - script:
+            name: build
+            cwd: back/
+            code: npm run build
+
+        - script:
+            name: prepare the container
+            code: |
+                mv ./back/lib ./lib
+                mv ./back/package.json ./package.json
+                ls -A1 | grep -v 'lib\|package.json\|wercker.yml' | xargs rm -rf
+                npm install --quiet --production && npm list --depth 0  --quiet
+
+
+
+
+back-push-container:
+
+    steps:
+
+        - script:
+            name: ls
+            code: |
+                ls -l .
+                echo "node_modules :"
+                ls -l node_modules
+                echo "lib :"
+                find ./lib
+
+        - script:
+            name: prepare gcr key file
+            code: |
+                export GCR_JSON_KEY_FILE2=$(node -e 'console.log(`{"client_email":"${process.env.SPLIT_GCLOUD_MAIL}","private_key":"${process.env.SPLIT_GCLOUD_PRIVATE_KEY}"}`)')
+
+        - script:
+            name: prepare image tag
+            code: |
+                export IMAGE_TAG=$(node -e "console.log(process.env.WERCKER_GIT_BRANCH+'-'+require('./package.json').version+'-'+(new Date()).toISOString().slice(0,-5).replace(/[:-]/g,'_')+'-'+process.env.WERCKER_GIT_COMMIT.slice(0,7))")
+                echo $IMAGE_TAG
+                echo $IMAGE_TAG >> image_tag
+                export IMAGE_MAIN_TAG=$(node -e "console.log(process.env.WERCKER_GIT_BRANCH == 'master' ? 'latest' : 'latest-'+process.env.WERCKER_GIT_BRANCH)")
+
+        - internal/docker-push:
+            name: push docker image to gcr
+            repository: $GCR_REPOSITORY
+            registry: https://gcr.io
+            username : _json_key
+            password: $GCR_JSON_KEY_FILE
+            tag: $IMAGE_TAG
+            working-dir: /pipeline/source
+            cmd: npm run start
+
+        - internal/docker-push:
+            name: push docker image to gcr with last tag
+            repository: $GCR_REPOSITORY
+            registry: https://gcr.io
+            username : _json_key
+            password: $GCR_JSON_KEY_FILE
+            tag: $IMAGE_MAIN_TAG
+            working-dir: /pipeline/source
+            cmd: npm run start
+
+        - internal/docker-push:
+            name: push docker image to hub.docker
+            username: $DOCKER_HUB_USERNAME
+            password: $DOCKER_HUB_PASSWORD
+            tag: $IMAGE_TAG
+            repository: platane/split-back
+            registry: https://registry.hub.docker.com
+            working-dir: /pipeline/source
+            cmd: npm run start
+
+        - internal/docker-push:
+            name: push docker image to hub.docker with last tag
+            username: $DOCKER_HUB_USERNAME
+            password: $DOCKER_HUB_PASSWORD
+            tag: $IMAGE_MAIN_TAG
+            repository: platane/split-back
+            registry: https://registry.hub.docker.com
+            working-dir: /pipeline/source
+            cmd: npm run start
+
+back-deploy:
+
+    box: ubuntu:latest
+
+    steps:
+
+        - install-packages:
+            name: ensure ssh is available
+            packages: openssh-client
+
+        - add-to-known_hosts:
+            hostname: $HOST
+
+        - script:
+            name: create identity file
+            code: |
+                echo $SSH_PRIVATE > ./key
+                chmod 600 ./key
+
+        - add-ssh-key:
+            keyname: SSH
+
+        - script:
+            name: kill and restart docker container
+            code: |
+                ssh -i ./key -l $SSH_USER $HOST 'docker rm -f $(docker ps -a -q) 2> /dev/null ; echo "ok"'
+                ssh -i ./key -l $SSH_USER $HOST "echo 'SPLIT_GCLOUD_PRIVATE_KEY=$SPLIT_GCLOUD_PRIVATE_KEY' > ~/envFile && echo 'SPLIT_GCLOUD_MAIL=$SPLIT_GCLOUD_MAIL' >> ~/envFile && echo 'SPLIT_GCLOUD_PROJECTID=$SPLIT_GCLOUD_PROJECTID' >> ~/envFile"
+                ssh -i ./key -l $SSH_USER $HOST "docker pull platane/split-back:$(cat image_tag) && docker run --env-file ~/envFile -p 80:9011 -d platane/split-back:$(cat image_tag)"
+
+
+        - script:
+            name: clean up identity file
+            code: |
+                rm ./key
+
+
+front-build:
+    steps:
+
+        - script:
+            name: npm install
+            cwd: front/
+            code: env NODE_ENV=dev npm install --quiet && npm list --depth 0  --quiet
+
+        - script:
+            name: prepare env var
+            code: |
+                export NODE_ENV=production
+                export API_HOST=$HOST
+                export API_PORT=80
+
+        - script:
+            name: print outdated package
+            cwd: front/
+            code: npm outdated --quiet
+
+        - script:
+            name: build
+            cwd: front/
+            code: npm run build
+
+
+front-deploy:
+
+    box: google/cloud-sdk
+
+    steps:
+
+        - script:
+            name: prepare .boto file
+            cwd: front/
+            code: |
+                echo "[Credentials]"            > .boto
+                echo "  gs_access_key_id ="     >> .boto
+                echo "  gs_secret_access_key =" >> .boto
+                echo "[GSUtil]"                 >> .boto
+                echo "  default_project_id ="   >> .boto
+
+        - narinari/gcs-website-deploy:
+            cwd: front/
+            bucket:   $GCS_BUCKET
+            project:  $SPLIT_GCLOUD_PROJECTID
+            access_key_id:    $GCS_ACCESS_KEY_ID
+            secret_access_key:    $GCS_SECRET_ACCESS_KEY
+            dir:  ./dist
