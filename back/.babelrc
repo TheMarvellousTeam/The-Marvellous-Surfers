@@ -1,5 +1,5 @@
 {
-    "presets": ["es2015", "stage-1"],
+    "presets": ["es2015", "stage-2"],
     "ignore": [
         "node_modules/**/*.js",
         "dist/**/*.js",
