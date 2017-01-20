@@ -19,12 +19,11 @@ export const create = config => {
 
                 .on('message',  buffer => {
 
-                    let data
                     try{
 
-                        data = buffer && JSON.parse( buffer.toString() )
+                        const {type, payload, meta} = buffer && JSON.parse( buffer.toString() )
 
-                        ee._emit( 'message', { ...( data || {} ), socketId: socket.id } )
+                        ee._emit( type, { ...( payload || {} ), meta, socketId: socket.id } )
 
                     } catch( err ){
                         console.log('error', err)
