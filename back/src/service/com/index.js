@@ -9,8 +9,8 @@ export const create = config => {
 
     const server = engineIo.listen( config.port )
 
-    ee.emit = ( socketId, type, data={} ) =>
-        server.clients[ socketId ] && server.clients[ socketId ].send( JSON.stringify({ type, data }) )
+    ee.emit = ( socketId, type, payload={}, meta={} ) =>
+        server.clients[ socketId ] && server.clients[ socketId ].send( JSON.stringify({ type, payload, meta }) )
 
     server
         .on('connection', socket => {
