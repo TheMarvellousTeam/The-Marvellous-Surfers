@@ -43,6 +43,7 @@ const service = {}
 
             ])
         )
+        .catch( err => console.err( err ))
 
 }
 
