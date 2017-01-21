@@ -3,7 +3,8 @@
     "version": "0.1.0",
 
     "dependencies": {
-    	"pixi.js"		: "~4.3.4"
+    	"pixi.js"		        :  "~4.3.4",
+    	"three"		            : "*"
     },
 
     "devDependencies" : {
