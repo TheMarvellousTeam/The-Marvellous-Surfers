@@ -46,22 +46,43 @@ export const create = config => {
     }
 
     // attach canvas
-    {
+    const attach = () => {
+
         const container = document.getElementById('mainScene')
-        const {width, height} = container.getBoundingClientRect()
+        container && ( container.style.display = 'block' )
 
-        const ratio = 1
+        setTimeout( () =>  {
 
-        setSize( width*ratio, height*ratio )
+            const {width, height} = container.getBoundingClientRect()
 
-        const canvas = renderer.domElement
 
-        if( canvas.parentNode )
-            canvas.parentNode.removeChild( canvas )
+            const ratio = 1
 
-        container.appendChild( canvas )
-        canvas.style=`width:${width}px;height:${height}px;`
+            setSize( width*ratio, height*ratio )
+
+            const canvas = renderer.domElement
+
+            if( canvas.parentNode )
+                canvas.parentNode.removeChild( canvas )
+
+            container.appendChild( canvas )
+            canvas.style=`width:${width}px;height:${height}px;`
+
+        })
     }
 
-    return Promise.resolve({ scene, camera })
+    const detach = () => {
+        const canvas = renderer.domElement
+        const container = document.getElementById('mainScene')
+        container && ( container.style.display = 'none' )
+        if( canvas.parentNode )
+            canvas.parentNode.removeChild( canvas )
+    }
+
+    const attached = () =>
+        !!renderer.domElement.parentNode
+
+    detach()
+
+    return Promise.resolve({ scene, camera, attach, detach, attached })
 }

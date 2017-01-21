@@ -13,7 +13,7 @@ import {create as createRenderHandler}  from './handler/render'
 import {create as createMenu, render as renderMenu, setVisible as setVisibleMenu}         from './handler/ui/menu'
 
 // bootsrap
-const state   = {
+const state   = window.state = {
     surfers:[
         { id:1, position: {x:0, y:0},velocity : {x:0, y:4} },
         { id:2, position: {x:0, y:40},velocity : {x:10, y:4} },
@@ -28,7 +28,7 @@ const service = {}
     Promise.all([
         createController().then( x => service.controller = x ),
         createCom(config.com).then( x => service.com = x ),
-        //createRenderer(config.renderer).then( x => service.renderer = x ),
+        createRenderer(config.renderer).then( x => service.renderer = x ),
         createBus().then( x => service.bus = x ),
     ])
         .then( () => {
@@ -52,12 +52,11 @@ const service = {}
                 createIoHandler( state, service ),
                 createInputHandler( state, service ),
                 createMenu( state, service ),
-                //createRenderHandler( state, service ),
+                createRenderHandler( state, service ),
 
             ])
         })
         .catch( err => console.err( err ))
-
 }
 
 {
@@ -66,11 +65,11 @@ const service = {}
 
         k ++
 
-        state.surfers[ 0 ].position.y = k * 0.7
-        state.surfers[ 0 ].velocity.x = Math.cos( k / 30 ) * 0.3
-        state.surfers[ 0 ].position.x += state.surfers[ 0 ].velocity.x
-
-        state.surfers[ 1 ].position.y = k * 0.7 + Math.sin( k / 70 ) * 20
+        // state.surfers[ 0 ].position.y = k * 0.7
+        // state.surfers[ 0 ].velocity.x = Math.cos( k / 30 ) * 0.3
+        // state.surfers[ 0 ].position.x += state.surfers[ 0 ].velocity.x
+        //
+        // state.surfers[ 1 ].position.y = k * 0.7 + Math.sin( k / 70 ) * 20
 
         service.bus && service.bus.emit('loop')
 
