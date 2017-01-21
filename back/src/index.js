@@ -9,6 +9,8 @@ let surfers = []
 let sharks = []
 let waves = []
 
+let inputs = {}
+
 
 function dump() {
     return {
@@ -19,9 +21,18 @@ function dump() {
     }
 }
 
-function serverLoop() {
-    //TODO update velocity & position with orientation
-    //TODO compute crash ?
+function serverLoop(com) {
+    //TODO input processing
+    for ( let id in inputs ) {
+
+    }
+
+    // update client
+    com.emit(god.id, 'state', dump())
+    for ( let player in surfers ) {
+        com.emit(player.id, 'state', dump())
+    }
+
 }
 
 
@@ -70,6 +81,7 @@ export const create = async config => {
                 players.push({
                     id: sid,
                     name: waiting_players[sid].name,
+                    state: { type: "ok", date: new Date() },
                     position: { x: ++i * player_interval,
                                 y: 0 },
                     velocity: { x: 0,
@@ -81,12 +93,14 @@ export const create = async config => {
             waiting_players = null // "forbid" join
 
             // start server loop
-            setInterval(serverLoop, config.srv.rate)
+            setInterval(function() {
+                serverLoop(com)   
+            }, config.srv.rate)
         }
     })
 
     com.on('action', ({ socketId, action }) => {
-        //TODO Resolve action
+        inputs[socketId] = action
     })
 
 }
