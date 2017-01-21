@@ -23,7 +23,7 @@ spec:
         spec:
             containers:
                 -   name: core
-                    image: eu.gcr.io/${GCR_PROJECT}/srv-core:${WERCKER_GIT_COMMIT}
+                    image: eu.gcr.io/${GC_PROJECT}/core:${WERCKER_GIT_COMMIT}
                     resources:
                         limits:
                             cpu: 300m

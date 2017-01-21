@@ -22,10 +22,31 @@ module.exports = {
                 exclude: /(node_modules|vendors)/,
                 use: 'babel-loader',
             },
+
+            {
+                test: /\.(eot|ttf|woff|woff2|svg|gif|jpg|png|bmp)$/,
+                use: `file-loader?name=${ production ? '' : '[name]-'}[hash:8].[ext]`,
+            },
         ],
     },
 
     plugins : [
+
+        // env var
+        new webpack.DefinePlugin(
+
+            [
+                'COM_HOST',
+                'COM_PORT',
+                'NODE_ENV',
+            ]
+                .reduce( (o,name) =>
+                    !(name in process.env)
+                        ? o
+                        : { ...o, [ 'process.env.'+name ] : `'${ process.env[ name ] }'`}
+                ,{})
+        ),
+
         ...(
             production
                 ? [
@@ -34,6 +55,7 @@ module.exports = {
                 ]
                 : []
         ),
+
     ],
 
     devtool : 'source-map',
