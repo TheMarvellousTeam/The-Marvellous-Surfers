@@ -62,8 +62,8 @@ function resolveCollisions() {
         // player/player
         for ( let player2 in surfers ) {
             if ( player.id != player2.id ) {
-                dx = Math.abs(player.position.x - player2.position.x)
-                dy = Math.abs(player.position.y - player2.position.y)
+                const dx = Math.abs(player.position.x - player2.position.x)
+                const dy = Math.abs(player.position.y - player2.position.y)
                 if ( dx < PLAYER_WIDTH && dy < PLAYER_HEIGHT ) {
                     if ( dx < PLAYER_WIDTH ) {
                         if ( player.position.x < player2.position.x ) {
@@ -85,9 +85,9 @@ function resolveCollisions() {
                     }
                     player.velocity.x = - player.position.x
                     player2.velocity.x = - player2.position.x
-                    player.state.type = "bump"
+                    player.state.type = 'bump'
                     player.state.date = new Date()
-                    player2.state.type = "bump"
+                    player2.state.type = 'bump'
                     player2.state.date = new Date()
                 }
             }
@@ -95,16 +95,15 @@ function resolveCollisions() {
 
         // player/wave
         for ( let wave in waves ) {
-            dx = Math.abs(player.position.x - wave.position.x)
-            if ( player.state.type != "surf" &&
+            if ( player.state.type != 'surf' &&
                  player.position.y - wave.position.y > 0 && player.position.y - wave.position.y < PLAYER_HEIGHT / 2 &&
                  player.position.x > wave.position.x && player.position.x + PLAYER_WIDTH < wave.position.x + WAVE_WIDTH ) {
 
                 player.velocity.y = wave.velocity.y
-                player.state.type = "surf"
+                player.state.type = 'surf'
                 player.state.date = new Date()
             }
-        } 
+        }
 
         // player/shark
         for ( let shark in sharks ) {
@@ -112,14 +111,14 @@ function resolveCollisions() {
                  player.position.x < shark.position.x + SHARK_WIDTH &&
                  player.position.y + PLAYER_HEIGHT > shark.position.y &&
                  player.position.y > shark.position.y + SHARK_HEIGHT ) {
-                
+
                 sharks = sharks.filter(s => s.id == shark.id)
                 player.velocity.y = Math.max(MIN_SPEED, player.velocity.y / 2)
             }
         }
-    
+
     }
-    
+
 }
 
 
@@ -132,41 +131,41 @@ export const create = config => {
     })
 
     com.on('deconnection', ({socketId}) =>  {
-    	console.log("[DISCONNECT]" + socketId);
+    	console.log('[DISCONNECT]' + socketId);
 
 	//mise a jour liste d'attente
 	if(waiting_players) {
     		delete waiting_players[socketId];
         	for ( let sid in waiting_players ) {
                 	com.emit(sid, 'players_info', {you: sid, room: waiting_players})
-         	} 
-	 }
-	
+         	}
+	}
+
 	//suppression du surfer in game
 	surfers = surfers.filter(surfer => surfer.id != socketId);
 	com.emit('state', dump())
     })
 
     com.on('join', ({ socketId, name }) => {
-        console.log("[JOIN] "+name+ " (sid:"+socketId+")")
+        console.log('[JOIN] '+name+ ' (sid:'+socketId+')')
         if ( waiting_players ) {
             waiting_players[socketId] = {name: name, ready: false}
             for ( let sid in waiting_players ) {
                 com.emit(sid, 'players_info', {you: sid, room: waiting_players})
-            } 
+            }
         }
     })
 
     com.on('player_ready', ({ socketId }) => {
-        console.log("[READY] "+waiting_players[socketId].name)
+        console.log('[READY] '+waiting_players[socketId].name)
         waiting_players[socketId].ready = true
-        let ready = true 
+        let ready = true
         for ( let sid in waiting_players ) {
             com.emit(sid, 'players_info', {you: sid, room:waiting_players})
             ready = ready && waiting_players[sid].ready
-        } 
+        }
         if ( ready ) {
-            console.log("[START]")
+            console.log('[START]')
             // choose and create god
             let sockets = Object.keys(waiting_players)
       // send start to players
@@ -177,7 +176,7 @@ export const create = config => {
                 surfers.push({
                     id: sid,
                     name: waiting_players[sid].name,
-                    state: { type: "ok", date: new Date() },
+                    state: { type: 'ok', date: new Date() },
                     position: { x: ++i * player_interval,
                                 y: 0 },
                     velocity: { x: 0,
@@ -190,7 +189,7 @@ export const create = config => {
 
             // start server loop
             setInterval(function() {
-                serverLoop(com)   
+                serverLoop(com)
             }, config.srv.rate)
         }
     })
@@ -199,6 +198,6 @@ export const create = config => {
         inputs[socketId] = action
     })
 
-    
+
 
 }
