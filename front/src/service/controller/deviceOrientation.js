@@ -1,6 +1,21 @@
 
 export const isSupported = () =>
     typeof window !== 'undefined' && !!window.DeviceOrientationEvent
+        && new Promise( resolve => {
+
+            const handler = event => {
+                clearTimeout( timeout )
+                window.removeEventListener('deviceorientation', handler)
+                resolve( event.beta !== null )
+            }
+            window.addEventListener('deviceorientation', handler)
+
+            const timeout = setTimeout( () => {
+                clearTimeout( timeout )
+                window.removeEventListener('deviceorientation', handler)
+                resolve( false )
+            },200)
+        })
 
 export const create = () => {
 
