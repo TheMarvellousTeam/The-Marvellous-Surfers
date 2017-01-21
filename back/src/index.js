@@ -78,7 +78,7 @@ export const create = async config => {
             delete waiting_players[god.id]
             for ( let sid in waiting_players ) {
                 // create player
-                players.push({
+                surfers.push({
                     id: sid,
                     name: waiting_players[sid].name,
                     state: { type: "ok", date: new Date() },
