@@ -47,25 +47,31 @@ const rules = [
 const corner = ({ x, y }) =>
     (+!!x) + (+!!y) -1
 
+const s = rules.map( () => 0 )
+
 const propagationPattern = ( vx, vy ) => {
 
-    const p = rules.map( t => {
+    let sum = 0
+    for( let k=rules.length; k--; ){
 
-        const dot = vx * t.x + vy * t.y
+        const dot = vx * rules[k].x + vy * rules[k].y
 
-        return Math.max( 0, dot + 0.2 ) * ( corner( t ) ? 0.707 : 1 )
-    })
+        sum += s[k] = Math.max( 0, dot + 0.2 ) * ( corner( rules[k] ) ? 0.707 : 1 )
 
-    const sum = p.reduce( (sum,x) => x + sum, 0 )
+    }
 
-    return p.map( p => p/sum )
+    for( let k=rules.length; k--; )
+        s[k] /= sum
+
+    return s
 }
 
 const copy = world =>
     world.map( arr => arr.map( o => ({ ... o })) )
 
 
-const PROPAGATION_VELOCITY_CONSERVATION = 0.9
+const PROPAGATION_VELOCITY_CONSERVATION = 0.95
+const ENERGY_TRANSFERT = 0.5
 
 export const propagation_step = world => {
 
@@ -75,9 +81,9 @@ export const propagation_step = world => {
     for( let y=world[0].length; y--; )
     {
 
-        const {h, wh, wx, wy} = world[x][y]
+        const {h, wx, wy} = world[x][y]
 
-        const _wh = - 0.5 * h
+        const _wh = - ENERGY_TRANSFERT * h
         const energy_tranfered = - _wh
 
 
