@@ -2,6 +2,13 @@
 export const create = ( state, {com} ) => {
     state.waiting_room = {}
 
+    function updateState(srvState) {
+        state.god = srvState.god
+        state.surfers = srvState.surfers
+        state.sharks = srvState.sharks
+        state.waves = srvState.waves
+    }
+
     com.on('players_info', ({you, room}) => {
         console.log('receive players_info')
         
@@ -10,9 +17,10 @@ export const create = ( state, {com} ) => {
         state.waiting_room.to_update = true
     })
 
-    com.on('start', ({ type }) => {
+    com.on('start', ({ type, srvState }) => {
         console.log('starting')
 
+        updateState(srvState)
         state.gameState = 'run'
         delete state.waiting_room
 
@@ -23,8 +31,11 @@ export const create = ( state, {com} ) => {
         }
     })
 
-    com.on('state', ({}) => {
-        //TODO update state        
+    com.on('state', ({god, surfers, sharks, waves}) => {
+        state.god = god
+        state.surfers = surfers
+        state.sharks = sharks
+        state.waves = waves
     })
 
 }

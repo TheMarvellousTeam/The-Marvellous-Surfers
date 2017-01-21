@@ -133,7 +133,7 @@ export const create = async config => {
                                 y: 1 },
                     orientation: 0
                 })
-                com.emit(sid, 'start', {type: 'surfer'})
+                com.emit(sid, 'start', {type: 'surfer', state: dump()})
             }
             waiting_players = null // "forbid" join
 

@@ -25,6 +25,7 @@ const service = {}
                 createInputHandler( state, service ),
                 createMenu( state, service ),
                 createRun( state, service ),
+
             ])
         )
         .then( () => gameLoop() )
