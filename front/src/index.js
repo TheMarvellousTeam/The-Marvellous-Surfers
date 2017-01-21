@@ -3,8 +3,8 @@ import {create as createCom}    from './service/com'
 import * as config              from './config'
 import pixi 			from 'pixi.js'
 
-createCom( config.com )
-   .then( () => 0 )
+//createCom( config.com )
+//   .then( () => 0 )
 
 let state = {
 
@@ -12,21 +12,53 @@ let state = {
 		{
 			id:1,
 			name:'Surfeur d\'Argent',
-			position: {x:0, y:50},
-			velocity : {x:1, y:0}
+			position: {x:50, y:0},
+			velocity : {x:0, y:4}
 		},
 		{
 			id:2,
 			name:'Surfeur d\'Or',
-			position: {x:-120, y:10},
-			velocity : {x:0, y:0}
+			position: {x:-120, y:0},
+			velocity : {x:0, y:4}
 		},
 		{
 			id:3,
 			name:'Surfeur de Platine',
-			position: {x:120, y:10},
-			velocity : {x:0, y:0}
+			position: {x:120, y:0},
+			velocity : {x:0, y:2}
 		}
+	],
+	waves:[
+		{
+			id:4,
+			position:{x:0, y: -300},
+			velocity:{x:0, y: 6}
+		},
+		{
+			id:5,
+			position:{x:-50, y: -350},
+			velocity:{x:0, y: 5}
+		},
+		{
+			id:6,
+			position:{x:20, y: -550},
+			velocity:{x:0, y: 5}
+		},
+		{
+			id:7,
+			position:{x:0, y: -800},
+			velocity:{x:0, y: 6}
+		},
+		{
+			id:4,
+			position:{x:-100, y: -900},
+			velocity:{x:0, y: 5}
+		},
+		{
+			id:8,
+			position:{x:200, y: -1000},
+			velocity:{x:0, y: 5}
+		},
 	]
 
 }
@@ -34,7 +66,12 @@ let state = {
 //Permet de definir l'id du joueur associe au client
 let playerId = 1;
 
-let surferSprites = {};
+let sprites = {};
+let waterBackground = {
+	id:'background',
+	position: { x:-200, y:50000},
+	velocity: { x:0, y:0}
+}
 
 //Permet de definir l'etat du jeu (action a effectuer dans la game loop)
 let gameState = play;
@@ -56,6 +93,8 @@ document.body.appendChild(renderer.view);
 loader
 	.add('surfer1',require('./assets/surfer1.png'))
 	.add('surfer2',require('./assets/surfer2.png'))
+	.add('water',require('./assets/water.jpg'))
+	.add('wave',require('./assets/wave.png'))
 	.load(setup);
 
 function getSurfer(surferId) {
@@ -69,6 +108,24 @@ function setup(){
 
 	let surferTexture = loader.resources.surfer1.texture;
 	let playerTexture = loader.resources.surfer2.texture;
+	let waterTexture = loader.resources.water.texture;
+	let waveTexture = loader.resources.wave.texture;
+
+	sprites['background'] = new PIXI.extras.TilingSprite(waterTexture, waterTexture.baseTexture.width, waterTexture.baseTexture.height*100);
+	sprites["background"].position.x = 0;
+	sprites["background"].position.y = 0;
+	sprites["background"].tilePosition.x = 0;
+	sprites["background"].tilePosition.y = 0;
+	stage.addChild(sprites["background"]);
+
+	state.waves.forEach((wave) => {
+
+		let waveSprite = new Sprite(waveTexture);
+
+		stage.addChild(waveSprite);
+		sprites[wave.id] = waveSprite;
+
+	});
 
 	state.surfers.forEach((item) => {
 
@@ -77,11 +134,12 @@ function setup(){
 			:new Sprite(surferTexture);
 
 		stage.addChild(surferSprite);
-		surferSprites[item.id] = surferSprite;
+		sprites[item.id] = surferSprite;
 
 	});
 
-	let playerSprite = surferSprites[playerId];
+
+	let playerSprite = sprites[playerId];
 	playerSprite.x = renderer.width / 2 - (playerSprite.width /2);
 	playerSprite.y = renderer.height * 0.66 - (playerSprite.height : 2);
 
@@ -100,14 +158,14 @@ function gameLoop() {
 
 function play() {
 
-	state.surfers.forEach((surfer) => {
+	[...state.surfers, ...state.waves, waterBackground].forEach((entity) => {
 
-		let coords = computeCoords(surfer);
-		surferSprites[surfer.id].x = coords.x;
-		surferSprites[surfer.id].y = coords.y;
+		let coords = computeCoords(entity);
+		sprites[entity.id].x = coords.x;
+		sprites[entity.id].y = coords.y;
 
-		surfer.position.x += surfer.velocity.x;
-		surfer.position.y += surfer.velocity.y;
+		entity.position.x += entity.velocity.x;
+		entity.position.y += entity.velocity.y;
 	});
 
 }
@@ -117,11 +175,11 @@ function play() {
 //(sa position dans le monde) pour obtenir son (sprite.x,sprite.y) (sa position a l'ecran)
 function computeCoords(entity) {
 
-	let playerSprite = surferSprites[playerId];
+	let playerSprite = sprites[playerId];
 	let player = getSurfer(playerId);
 
 	let x = playerSprite.x + (entity.position.x - player.position.x);
-	let y = playerSprite.y + (entity.position.y - player.position.y);
+	let y = playerSprite.y - (entity.position.y - player.position.y);
 
 	return {x:x, y:y};
 }
