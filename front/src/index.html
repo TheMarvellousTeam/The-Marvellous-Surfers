@@ -6,6 +6,7 @@
 #mainScene{ height: 100% }
 * {
     box-sizing: border-box;
+    font-family:Impact, Charcoal, sans-serif
 }
 
 .fullscreen{
@@ -16,11 +17,34 @@
 .center{
 	margin:auto;
 	width:80%;
-	background-color:yellow;
 	text-align:center;
+	background-color:yellow;
 }
 .playerReady{
 	background-color:green;
+	height:150px;
+}
+#playerName{
+	display:block;
+	margin:auto;
+	height:60px;
+	font-size:32px;
+	width:80%;
+}
+#connectButton{
+	margin-top:50px;
+	margin-bottom:20px;
+	font-size:24px;
+}
+
+#title{
+	font-size:46px;
+}
+
+.itemPlayerName{
+	font-size:32px;
+	list-style-type:none;
+	
 }
 </style>
 
@@ -28,9 +52,9 @@
 
     <div id="container-menu" class="fullscreen">
     	<div class="center">
-    		<h1>Marvellous Surfers<h1>
+    		<h1 id="title" >Marvellous Surfers</h1>
 		<div id="connexion">
-			<input id="playerName" type="text" placeholder="Entrez votre nom"></input>
+			<input  id="playerName" type="text" placeholder="Entrez votre nom"></input>
     			<button id="connectButton">Se connecter</button>
 		</div>
 

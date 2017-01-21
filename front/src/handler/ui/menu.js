@@ -94,6 +94,7 @@ export const render = () => {
             let li = document.createElement('li')
             //li.innerHTML = player.name + (player.ready ? ' (ready)' : ' (not ready)')
             li.innerHTML= player.name;
+	    li.className ="itemPlayerName";
 	    if(player.ready) {
 	    
 	    	li.className = li.className + ' playerReady';

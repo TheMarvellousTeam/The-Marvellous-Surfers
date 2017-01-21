@@ -54,7 +54,9 @@ function serverLoop(com) {
 
 function applyInputOn(id, input) {
     //blindy apply Platane's input
-    surfers.find(s => s.id == id).velocity.x += input.vx
+    let surfer = surfers.find(s => s.id == id);
+    surfer.velocity.x = input
+    console.log(surfer.name + " vx : " + input);
 }
 
 function resolveCollisions() {
@@ -194,8 +196,10 @@ export const create = config => {
         }
     })
 
-    com.on('action', ({ socketId, action }) => {
-        inputs[socketId] = action
+    com.on('action', ({socketId, vx}) => {
+        inputs[socketId] = vx
+	console.log("ACTION");
+	console.log(vx);
     })
 
 
