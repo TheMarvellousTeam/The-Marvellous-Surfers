@@ -16,26 +16,26 @@ function getSurfer(surferId) {
 
 }
 
-export const create = ( st, service ) => {
-	
-	state = st;
+export const create = ( st, service ) =>
+	new Promise( resolve  => {
+
+		state = st;
 
 
 
-	document.body.appendChild(renderer.view);
+		document.body.appendChild(renderer.view);
 
-	return PIXI.loader
-		.add('surfer1',require('./../../assets/surfer1.png'))
-		.add('surfer2',require('./../../assets/surfer2.png'))
-		.add('water',require('./../../assets/water.jpg'))
-		.add('wave',require('./../../assets/wave.png'))
-		.add('shark',require('./../../assets/shark.jpg'))
-		.load(setup);
+		return PIXI.loader
+			.add('surfer1',require('./../../assets/surfer1.png'))
+			.add('surfer2',require('./../../assets/surfer2.png'))
+			.add('water',require('./../../assets/water.jpg'))
+			.add('wave',require('./../../assets/wave.png'))
+			.add('shark',require('./../../assets/shark.jpg'))
+			.load(setup);
 
 
-	function setup(){
+		function setup(){
 
-		return Promise.resolve().then( () => {
 			const surferTexture = PIXI.loader.resources.surfer1.texture;
 			const playerTexture = PIXI.loader.resources.surfer2.texture;
 			const waterTexture = PIXI.loader.resources.water.texture;
@@ -73,12 +73,14 @@ export const create = ( st, service ) => {
 			const playerSprite = sprites[state.myId];
 			playerSprite.x = renderer.width / 2 - (playerSprite.width /2);
 			playerSprite.y = renderer.height * 0.66 - (playerSprite.height : 2);
-		});
-	}
-}
+
+			resolve()
+		}
+	})
+
 
 export const render = () => {
-	
+
 	console.log('render run');
 	[...state.surfers, ...state.waves, waterBackground].forEach((entity) => {
 

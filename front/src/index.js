@@ -27,9 +27,8 @@ const service = {}
                 createMenuUI( state, service ),
                 createUiRunHandler( state, service ),
             ])
-        ).then( () =>
-		gameLoop()
-	)
+        )
+        .then( () => gameLoop() )
 
 }
 
@@ -39,14 +38,14 @@ function gameLoop() {
 
 	//gameState();
 	switch(state.gameState){
-	
-		case "menu":
+
+		case 'menu':
 			break;
 
-		case "run":
+		case 'run':
 			renderUiRun();
 			break;
-	
+
 	}
 
 }
