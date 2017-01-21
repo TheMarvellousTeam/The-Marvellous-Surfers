@@ -28,11 +28,12 @@ export const create = ( state, { renderer, bus } ) => {
             // update
             {
                 // position
-                sprite.position.x = 0
-                sprite.position.y = 0
+                sprite.position.x = surfer.position.x
+                sprite.position.y = surfer.position.y
+
 
                 // animation
-                sprite.setState( 0 )
+                sprite.setState( surfer.velocity.x > 0 ? 1 : 0 )
             }
 
         })

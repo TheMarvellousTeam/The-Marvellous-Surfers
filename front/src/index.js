@@ -14,7 +14,15 @@ import {create as createMenu, render as renderMenu, setVisible as setVisibleMenu
 import {create as createRun, render as renderRun, setVisible as setVisibleRun}   from './handler/ui/run'
 
 // bootsrap
-const state   = { surfers:[{ id:1, position: {x:50, y:0},velocity : {x:0, y:4} }, { id:2, position: {x:50, y:40},velocity : {x:10, y:4} }], waves:[], myId:1, gameState:'menu' }
+const state   = {
+    surfers:[
+        { id:1, position: {x:0, y:0},velocity : {x:0, y:4} },
+        { id:2, position: {x:0, y:40},velocity : {x:10, y:4} },
+    ],
+    waves:[],
+    myId:1,
+    gameState:'menu'
+}
 const service = {}
 {
 
@@ -39,7 +47,16 @@ const service = {}
 }
 
 {
+    let k = 0
     const loop = () => {
+
+        k ++
+
+        state.surfers[ 0 ].position.y = k * 0.2
+        state.surfers[ 0 ].velocity.x = Math.sin( k / 10 ) * 3
+        state.surfers[ 0 ].position.x += state.surfers[ 0 ].velocity.x
+
+        state.surfers[ 1 ].position.y = k * 0.2 + Math.sin( k / 70 ) * 20
 
         service.bus && service.bus.emit('loop')
 

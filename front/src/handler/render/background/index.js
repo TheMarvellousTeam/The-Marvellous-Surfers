@@ -1,7 +1,7 @@
 import * as THREE    from 'three'
 
 const textureBack       = new THREE.TextureLoader().load( require('../../../assets/background/back.png') )
-const textureBubble1    = new THREE.TextureLoader().load( require('../../../assets/background/bubble1.png') )
+const textureBubble1    = new THREE.TextureLoader().load( require('../../../assets/background/back.png') )
 
 export const create = ( state, { renderer } ) => {
 
@@ -9,8 +9,7 @@ export const create = ( state, { renderer } ) => {
 
     renderer.scene.add( container )
     container.name = 'ground'
-    container.rotation.x = -Math.PI/2
-    container.position.y = -60
+    container.position.z = -6
 
     {
         const geo = new THREE.PlaneBufferGeometry( 100, 100 )

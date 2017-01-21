@@ -3,7 +3,7 @@ import * as THREE    from 'three'
 export const create = config => {
 
     const camera    = new THREE.PerspectiveCamera( 50, 1, 0.01, 3000 )
-    camera.position.set( 0, 60, 0 )
+    camera.position.set( 0, 0, 120 )
     camera.lookAt( new THREE.Vector3(0,0,0) )
     camera.updateProjectionMatrix ()
 
@@ -28,7 +28,7 @@ export const create = config => {
         const hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 )
         hemiLight.color.setHSL( 0.6, 1, 0.6 )
         hemiLight.groundColor.setHSL( 0.095, 1, 0.75 )
-        hemiLight.position.set( 0, 500, 0 )
+        hemiLight.position.set( 0, 0, 500 )
         hemiLight.name= 'hemilight'
         scene.add( hemiLight )
 
