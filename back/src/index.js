@@ -123,13 +123,26 @@ function resolveCollisions() {
 }
 
 
-export const create = async config => {
+export const create = config => {
 
-    const com = await createCom( config.com )
+	const com = createCom( config.com)
 
     com.on('connection', ({ socketId }) => {
         com.emit( socketId, 'ready' )
-        com.emit( socketId, 'state', dump())
+    })
+
+    com.on('deconnection', ({socketId}) =>  {
+    	console.log("[DISCONNECT]" + socketId);
+
+	//mise a jour liste d'attente
+    	delete waiting_players[socketId];
+            for ( let sid in waiting_players ) {
+                com.emit(sid, 'players_info', {you: sid, room: waiting_players})
+            } 
+	
+	//suppression du surfer in game
+	state.surfers = state.surfer.filter(surfer => surfer.id != socketId);
+	com.emit('state', dump())
     })
 
     com.on('join', ({ socketId, name }) => {
@@ -142,7 +155,7 @@ export const create = async config => {
         }
     })
 
-    com.on('ready', ({ socketId }) => {
+    com.on('player_ready', ({ socketId }) => {
         console.log("[READY] "+waiting_players[socketId].name)
         waiting_players[socketId].ready = true
         let ready = true 
@@ -154,15 +167,7 @@ export const create = async config => {
             console.log("[START]")
             // choose and create god
             let sockets = Object.keys(waiting_players)
-            /*
-            god.id = sockets[Math.floor(Math.random() * sockets.length)] 
-            god.power = 0
-            god.name = waiting_players[god.id].name
-            delete waiting_players[god.id]
-            // send start to god
-            com.emit(god.id, 'start', {type: 'god'})
-            */
-            // send start to players
+      // send start to players
             let player_interval = Math.floor(100 / sockets.length +1) // remove +1 when god arises
             let i = 0
             for ( let sid in waiting_players ) {
@@ -191,5 +196,7 @@ export const create = async config => {
     com.on('action', ({ socketId, action }) => {
         inputs[socketId] = action
     })
+
+    
 
 }

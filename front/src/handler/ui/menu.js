@@ -1,37 +1,83 @@
 let state = null
-let comm = null
+let com = null
+const container = document.getElementById('container-menu')
+const waitingRoomDiv = document.getElementById('waiting_room');
+const connexionDiv = document.getElementById('connexion');
+const playerListDiv = document.getElementById('player-list');
+let menuState = "connexion";
 
-const div = document.getElementById('waiting_room')
-export const create = ( aState, {com} ) => {
+
+function setMenuState(mState) {
+
+	menuState = mState;
+	switch(menuState) {
+	
+		case "connexion":
+			waitingRoomDiv.style.display = 'none';
+			connexionDiv.style.display = 'block';
+			break;
+
+		case "playerlist":
+			waitingRoomDiv.style.display = 'block';
+			connexionDiv.style.display = 'none';
+			break;
+	
+	}
+
+}
+
+
+export const create = ( aState, services ) => {
     state = aState
-    comm = com
-     
+    com = services.com
+console.log('create menu');
+
+    setMenuState('connexion');
+    document.getElementById('connectButton').onclick =  (event) => {
+    	let playerName = document.getElementById('playerName').value;	
+	console.log(playerName);
+	if(playerName) {
+	
+		com.emit('join', {name:playerName});
+		setMenuState('playerlist');
+
+	}
+    };
+    
+    document.getElementById('readyButton').onclick = (event) => {
+		com.emit('player_ready');
+    };
+    
+    /*
     let input = document.createElement('input')
     input.type = 'text'
     input.placeholder = 'Enter your name'
     let go = document.createElement('button')
     go.value = 'Go !'
     go.onclick = function() {
-        div.removeChild(input)
-        div.removeChild(go)
-        comm.emit('join', {name: input.value})
+        waitingRoomDiv.removeChild(input)
+        waitingRoomDiv.removeChild(go)
+        com.emit('join', {name: input.value})
     }
-    div.appendChild(input)
-    div.appendChild(go)
+    
+    waitingRoomDiv.appendChild(input)
+    waitingRoomDiv.appendChild(go)
+    */
+	com.on('players_info', (infos) => {
+		render();
+	})
 }
 
 export const deleteUI = () => {
-    while ( div.lastChild ) {
-        div.removeChild(div.lastChild)
+    while ( playerListDiv.lastChild ) {
+        playerListDiv.removeChild(playerListDiv.lastChild)
     }
 }
 
 export const setVisible = (visible) => {
-    let style = "none"
-    if ( visible ) {
-        style = "block"
-    }
-    div.style.display = style
+	container.style.display = visible
+		?'block'
+		:'none';
 }
 
 export const render = () => {
@@ -41,22 +87,18 @@ export const render = () => {
     } else if ( state.waiting_room.to_update ) {
         deleteUI()
         let ul = document.createElement('ul')
-        div.appendChild(ul)
+        playerListDiv.appendChild(ul)
         console.log(state.waiting_room)
         for ( let id in state.waiting_room.players ) {
             let player = state.waiting_room.players[id]
             let li = document.createElement('li')
-            li.innerHTML = player.name + (player.ready ? ' (ready)' : ' (not ready)')
-            if ( id == state.myId ) {
-                let ready = document.createElement('button')
-                ready.value = 'Ready !'
-                ready.onclick = function(){
-                    comm.emit('ready')
-                    li.removeChild(ready)
-                }
-                li.appendChild(ready)
-            }
-            ul.appendChild(li)
+            //li.innerHTML = player.name + (player.ready ? ' (ready)' : ' (not ready)')
+            li.innerHTML= player.name;
+	    if(player.ready) {
+	    
+	    	li.className = li.className + ' playerReady';
+	    }
+	    ul.appendChild(li)
         }
         state.waiting_room.to_update = false
     }

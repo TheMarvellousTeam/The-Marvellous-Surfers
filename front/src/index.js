@@ -11,7 +11,6 @@ import {create as createInputHandler}   from './handler/input'
 import {create as createRenderHandler}  from './handler/render'
 
 import {create as createMenu, render as renderMenu, setVisible as setVisibleMenu}         from './handler/ui/menu'
-import {create as createRun, render as renderRun, setVisible as setVisibleRun}   from './handler/ui/run'
 
 // bootsrap
 const state   = {
@@ -29,17 +28,17 @@ const service = {}
     Promise.all([
         createController().then( x => service.controller = x ),
         createCom(config.com).then( x => service.com = x ),
-        createRenderer(config.renderer).then( x => service.renderer = x ),
+        //createRenderer(config.renderer).then( x => service.renderer = x ),
         createBus().then( x => service.bus = x ),
     ])
-        .then( () =>
+        .then( () =>console.log(0)||
+
             Promise.all([
 
                 createIoHandler( state, service ),
                 createInputHandler( state, service ),
-                // createMenu( state, service ),
-                // createRun( state, service ),
-                createRenderHandler( state, service ),
+                createMenu( state, service ),
+                //createRenderHandler( state, service ),
 
             ])
         )

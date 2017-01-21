@@ -17,18 +17,13 @@ export const create = ( state, {com} ) => {
         state.waiting_room.to_update = true
     })
 
-    com.on('start', ({ type, srvState }) => {
+    com.on('start', (msg) => {
         console.log('starting')
 
-        updateState(srvState)
+        updateState(msg.state)
         state.gameState = 'run'
         delete state.waiting_room
 
-        if ( type == 'surfer' ) {
-            //TODO launch surfer client
-        } else if ( type == 'god' ) {
-            //TODO launch god client
-        }
     })
 
     com.on('state', ({god, surfers, sharks, waves}) => {

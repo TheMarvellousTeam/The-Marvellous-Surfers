@@ -8,11 +8,39 @@
     box-sizing: border-box;
 }
 
+.fullscreen{
+	width:100%;
+	height:100%;
+	background-color:red;
+}
+.center{
+	margin:auto;
+	width:80%;
+	background-color:yellow;
+	text-align:center;
+}
+.playerReady{
+	background-color:green;
+}
 </style>
 
 <body style="margin:0">
 
-    <div id="waiting_room"></div>
+    <div id="container-menu" class="fullscreen">
+    	<div class="center">
+    		<h1>Marvellous Surfers<h1>
+		<div id="connexion">
+			<input id="playerName" type="text" placeholder="Entrez votre nom"></input>
+    			<button id="connectButton">Se connecter</button>
+		</div>
+    		
+		<div id="waiting_room">
+			<div id="player-list">
+			</div>
+    			<button id="readyButton">Prêt !</button>
+		</div>
+	</div>
+    </div>
 
     <div id="app"></div>
     <div id="mainScene"></div>

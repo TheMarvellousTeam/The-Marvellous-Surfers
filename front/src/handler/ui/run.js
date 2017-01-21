@@ -17,6 +17,21 @@ function getSurfer(surferId) {
 
 }
 
+function getSprite(entityId, spriteName) {
+
+	let sprite = sprites[entityId];
+
+	if (!sprite) {
+	
+		const texture = PIXI/loader.resources[spriteName].texture;
+		sprite = new PIXI.Sprite(texture);
+
+	}
+
+	return sprite;
+
+}
+
 export const create = ( st, service ) =>
 	new Promise( resolve  => {
 
