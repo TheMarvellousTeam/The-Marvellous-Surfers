@@ -26,7 +26,7 @@ export const create = ( state, { renderer } ) => {
 
     {
         textureWaves.wrapS = textureWaves.wrapT = THREE.RepeatWrapping
-        textureWaves.repeat.set( l/80, l/80 )
+        textureWaves.repeat.set( l/200, l/200 )
         const geo = new THREE.PlaneBufferGeometry( l, l )
         const mat = new THREE.MeshPhongMaterial({
             color       : 0xffffff,

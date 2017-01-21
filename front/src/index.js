@@ -52,11 +52,11 @@ const service = {}
 
         k ++
 
-        state.surfers[ 0 ].position.y = k * 0.2
-        state.surfers[ 0 ].velocity.x = Math.cos( k / 3 ) * 1
+        state.surfers[ 0 ].position.y = k * 0.7
+        state.surfers[ 0 ].velocity.x = Math.cos( k / 30 ) * 0.3
         state.surfers[ 0 ].position.x += state.surfers[ 0 ].velocity.x
 
-        state.surfers[ 1 ].position.y = k * 0.2 + Math.sin( k / 70 ) * 20
+        state.surfers[ 1 ].position.y = k * 0.7 + Math.sin( k / 70 ) * 20
 
         service.bus && service.bus.emit('loop')
 
