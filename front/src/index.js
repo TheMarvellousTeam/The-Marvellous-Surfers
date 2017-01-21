@@ -1,8 +1,32 @@
 import 'file-loader?name=index.html!./index.html'
 import * as config              from './config'
 import pixi 			        from 'pixi.js'
-import {state}                    from './iohandler'
 
+import {create as createController}     from './service/controller'
+import {create as createCom}            from './service/com'
+
+import {create as createIoHandler}      from './handler/io'
+import {create as createInputHandler}   from './handler/input'
+
+// bootsrap
+const state   = { surfers:[{ id:1, position: {x:50, y:0},velocity : {x:0, y:4} }], waves:[], meId:null }
+const service = {}
+{
+
+    Promise.all([
+        createController().then( x => service.controller = x ),
+        createCom().then( x => service.com = x ),
+    ])
+        .then( () =>
+            Promise.all([
+
+                createIoHandler( state, service ),
+                createInputHandler( state, service ),
+
+            ])
+        )
+
+}
 
 //Permet de definir l'id du joueur associe au client
 let playerId = 1;
@@ -53,11 +77,11 @@ function setup(){
 	let waveTexture = loader.resources.wave.texture;
 
 	sprites['background'] = new PIXI.extras.TilingSprite(waterTexture, waterTexture.baseTexture.width, waterTexture.baseTexture.height*100);
-	sprites["background"].position.x = 0;
-	sprites["background"].position.y = 0;
-	sprites["background"].tilePosition.x = 0;
-	sprites["background"].tilePosition.y = 0;
-	stage.addChild(sprites["background"]);
+	sprites['background'].position.x = 0;
+	sprites['background'].position.y = 0;
+	sprites['background'].tilePosition.x = 0;
+	sprites['background'].tilePosition.y = 0;
+	stage.addChild(sprites['background']);
 
 	state.waves.forEach((wave) => {
 
@@ -98,6 +122,8 @@ function gameLoop() {
 }
 
 function play() {
+
+
 
 	[...state.surfers, ...state.waves, waterBackground].forEach((entity) => {
 

@@ -1,8 +1,10 @@
 import regeneratorRuntime           from 'regenerator-runtime'
 import * as deviceOrientation       from './deviceOrientation'
+import * as mouse                   from './mouse'
 
 const modes = [
     deviceOrientation,
+    mouse,
 ]
 
 // iterate thrught the list,
