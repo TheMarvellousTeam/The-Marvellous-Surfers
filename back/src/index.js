@@ -11,6 +11,8 @@ let waves = []
 
 let inputs = {}
 
+const WIDTH_PLAYER = 1
+const HIGH_PLAYER = 2
 
 function dump() {
     return {
@@ -26,14 +28,14 @@ function serverLoop(com) {
     for ( let id in inputs ) {
         applyInputOn(inputs[id])  
     }
-    resolveCollisions()
 
-    //TODO update position of each entity
+    // update position of each entity
     [...surfers, ...sharks, ...waves].forEach(e => {
         e.position.x += e.velocity.x
         e.position.y += e.velocity.y
     })
-    //TODO possibly modify state of fallen player
+
+    resolveCollisions()
 
     // update client
     com.emit(god.id, 'state', dump())
@@ -49,9 +51,29 @@ function applyInputOn(id, input) {
 
 function resolveCollisions() {
     //TODO search for collisions
-    // player/player
-    // player/wave
-    // player/shark
+    for ( let player in surfers ) {
+        // player/player
+        for ( let player2 in surfers ) {
+            dx = Math.abs(player.position.x - player2.position.x)
+            dy = Math.abs(player.position.y - player2.position.y)
+            if ( dx < WIDTH_PLAYER && dy < HIGH_PLAYER ) {
+                //TODO Handle collision    
+            }
+        }
+
+        // player/wave
+        for ( let wave in waves ) {
+            dx = Math.abs(player.position.x - wave.position.x)
+            if ( wave.position.y  ) {
+
+            }
+        } 
+
+        // player/shark
+        for ( let shark in sharks ) {
+        }
+    
+    }
 }
 
 
@@ -59,7 +81,7 @@ export const create = async config => {
 
     const com = await createCom( config.com )
 
-    com.on('connection', ({ socketId })  => {
+    com.on('connection', ({ socketId }) => {
         com.emit( socketId, 'ready' )
         com.emit( socketId, 'state', dump())
     })
@@ -83,18 +105,20 @@ export const create = async config => {
             ready = ready && waiting_players[sid].ready
         } 
         if ( ready ) {
+            console.log("[START]")
             // choose and create god
             let sockets = Object.keys(waiting_players)
+            /*
             god.id = sockets[Math.floor(Math.random() * sockets.length)] 
             god.power = 0
             god.name = waiting_players[god.id].name
+            delete waiting_players[god.id]
             // send start to god
-            com.emit(god, 'start', {type: 'god'})
-
+            com.emit(god.id, 'start', {type: 'god'})
+            */
             // send start to players
             let player_interval = Math.floor(100 / sockets.length)
             let i = 0
-            delete waiting_players[god.id]
             for ( let sid in waiting_players ) {
                 // create player
                 surfers.push({

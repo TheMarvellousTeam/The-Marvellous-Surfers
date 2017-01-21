@@ -6,7 +6,7 @@ export const create = ( state, {com} ) => {
         console.log('receive players_info')
         
         state.myId = you
-        state.waiting_room = room
+        state.waiting_room.players = room
         state.waiting_room.to_update = true
     })
 

@@ -42,8 +42,9 @@ export const render = () => {
         deleteUI()
         let ul = document.createElement('ul')
         div.appendChild(ul)
-        for ( let id in state.waiting_room ) {
-            let player = state.waiting_room[id]
+        console.log(state.waiting_room)
+        for ( let id in state.waiting_room.players ) {
+            let player = state.waiting_room.players[id]
             let li = document.createElement('li')
             li.innerHTML = player.name + (player.ready ? ' (ready)' : ' (not ready)')
             if ( id == state.myId ) {
