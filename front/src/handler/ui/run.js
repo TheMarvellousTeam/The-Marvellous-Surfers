@@ -1,6 +1,7 @@
 import pixi 			        from 'pixi.js'
 
 let state = null
+let container = null;
 let stage = new PIXI.Container()
 let renderer = PIXI.autoDetectRenderer(512,512)
 let sprites = {}
@@ -23,7 +24,11 @@ export const create = ( st, service ) =>
 
 
 
-		document.body.appendChild(renderer.view);
+		container = document.createElement('div');
+		container.id = "run-renderer";
+		container.style.display = 'none';
+		container.appendChild(renderer.view);
+		document.body.appendChild(container);
 
 		return PIXI.loader
 			.add('surfer1',require('./../../assets/surfer1.png'))
@@ -72,7 +77,7 @@ export const create = ( st, service ) =>
 
 			const playerSprite = sprites[state.myId];
 			playerSprite.x = renderer.width / 2 - (playerSprite.width /2);
-			playerSprite.y = renderer.height * 0.66 - (playerSprite.height : 2);
+			playerSprite.y = renderer.height * 0.66 - (playerSprite.height / 2);
 
 			resolve()
 		}
@@ -81,7 +86,6 @@ export const create = ( st, service ) =>
 
 export const render = () => {
 
-	console.log('render run');
 	[...state.surfers, ...state.waves, waterBackground].forEach((entity) => {
 
 		const coords = computeCoords(entity);
@@ -107,4 +111,13 @@ function computeCoords(entity) {
 	const y = playerSprite.y - (entity.position.y - player.position.y);
 
 	return {x:x, y:y};
+}
+
+
+export const setVisible = (visible) => {
+
+	container.style.display = visible
+			?'block'
+			:'none';
+
 }
