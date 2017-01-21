@@ -54,10 +54,12 @@ function resolveCollisions() {
     for ( let player in surfers ) {
         // player/player
         for ( let player2 in surfers ) {
-            dx = Math.abs(player.position.x - player2.position.x)
-            dy = Math.abs(player.position.y - player2.position.y)
-            if ( dx < WIDTH_PLAYER && dy < HIGH_PLAYER ) {
-                //TODO Handle collision    
+            if ( player.id != player2.id ) {
+                dx = Math.abs(player.position.x - player2.position.x)
+                dy = Math.abs(player.position.y - player2.position.y)
+                if ( dx < WIDTH_PLAYER && dy < HIGH_PLAYER ) {
+                    //TODO Handle collision    
+                }
             }
         }
 
@@ -117,7 +119,7 @@ export const create = async config => {
             com.emit(god.id, 'start', {type: 'god'})
             */
             // send start to players
-            let player_interval = Math.floor(100 / sockets.length)
+            let player_interval = Math.floor(100 / sockets.length +1) // remove +1 when god arises
             let i = 0
             for ( let sid in waiting_players ) {
                 // create player
