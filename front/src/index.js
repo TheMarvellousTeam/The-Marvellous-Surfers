@@ -31,7 +31,21 @@ const service = {}
         //createRenderer(config.renderer).then( x => service.renderer = x ),
         createBus().then( x => service.bus = x ),
     ])
-        .then( () =>console.log(0)||
+        .then( () => {
+        
+		service.bus.on("changeGameState", (gameState) => {
+		
+			console.log("new game state : " +gameState);
+			switch(gameState) {
+				
+				case "run":
+					setVisibleMenu(false);
+					break;
+			
+			}
+		});
+	
+	}).then( () => {
 
             Promise.all([
 
@@ -41,7 +55,7 @@ const service = {}
                 //createRenderHandler( state, service ),
 
             ])
-        )
+        })
         .catch( err => console.err( err ))
 
 }

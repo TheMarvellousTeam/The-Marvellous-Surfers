@@ -1,5 +1,5 @@
 
-export const create = ( state, {com} ) => {
+export const create = ( state, services ) => {
     state.waiting_room = {}
 
     function updateState(srvState) {
@@ -9,7 +9,7 @@ export const create = ( state, {com} ) => {
         state.waves = srvState.waves
     }
 
-    com.on('players_info', ({you, room}) => {
+    services.com.on('players_info', ({you, room}) => {
         console.log('receive players_info')
         
         state.myId = you
@@ -17,16 +17,17 @@ export const create = ( state, {com} ) => {
         state.waiting_room.to_update = true
     })
 
-    com.on('start', (msg) => {
+    services.com.on('start', (msg) => {
         console.log('starting')
-
         updateState(msg.state)
         state.gameState = 'run'
         delete state.waiting_room
 
+	services.bus.emit("changeGameState", state.gameState);
+
     })
 
-    com.on('state', ({god, surfers, sharks, waves}) => {
+    services.com.on('state', ({god, surfers, sharks, waves}) => {
         state.god = god
         state.surfers = surfers
         state.sharks = sharks
