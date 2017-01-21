@@ -21,11 +21,6 @@ back-build:
 
         - script:
             cwd: back
-            name: print outdated package
-            code: yarn outdated
-
-        - script:
-            cwd: back
             name: build
             code: yarn run build
 
@@ -104,11 +99,6 @@ front-build:
                 npm install -g yarn --quiet --depth 0
                 export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
                 HOME=$YARN_CACHE yarn --pure-lockfile
-
-        - script:
-            cwd: front
-            name: print outdated package
-            code: yarn outdated
 
         - script:
             cwd: front
