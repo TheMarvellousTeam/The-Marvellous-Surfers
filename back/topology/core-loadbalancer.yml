@@ -1,0 +1,18 @@
+---
+
+
+# service load balancer
+apiVersion: v1
+kind: Service
+metadata:
+    namespace: ${KUBERNETES_NAMESPACE}
+    name: core-loadbalancer
+spec:
+    type: LoadBalancer
+    sessionAffinity: ClientIP
+    ports:
+        -   name: socket
+            port: 80
+            targetPort: 8080
+    selector:
+        app: core
