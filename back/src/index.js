@@ -135,13 +135,15 @@ export const create = config => {
     	console.log("[DISCONNECT]" + socketId);
 
 	//mise a jour liste d'attente
-    	delete waiting_players[socketId];
-            for ( let sid in waiting_players ) {
-                com.emit(sid, 'players_info', {you: sid, room: waiting_players})
-            } 
+	if(waiting_players) {
+    		delete waiting_players[socketId];
+        	for ( let sid in waiting_players ) {
+                	com.emit(sid, 'players_info', {you: sid, room: waiting_players})
+         	} 
+	 }
 	
 	//suppression du surfer in game
-	state.surfers = state.surfer.filter(surfer => surfer.id != socketId);
+	surfers = surfers.filter(surfer => surfer.id != socketId);
 	com.emit('state', dump())
     })
 
