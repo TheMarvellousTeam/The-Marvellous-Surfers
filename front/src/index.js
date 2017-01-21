@@ -124,3 +124,6 @@ function computeCoords(entity) {
 
 	return {x:x, y:y};
 }
+
+
+createControl()
