@@ -7,9 +7,10 @@ import {create as createCom}            from './service/com'
 
 import {create as createIoHandler}      from './handler/io'
 import {create as createInputHandler}   from './handler/input'
+import {create as createMenuUI}         from './handler/ui/menu'
 
 // bootsrap
-const state   = { surfers:[{ id:1, position: {x:50, y:0},velocity : {x:0, y:4} }], waves:[], meId:null }
+const state   = { surfers:[{ id:1, position: {x:50, y:0},velocity : {x:0, y:4} }], waves:[], myId:null}
 const service = {}
 {
 
@@ -22,7 +23,8 @@ const service = {}
 
                 createIoHandler( state, service ),
                 createInputHandler( state, service ),
-
+                createMenuUI( state, service ),
+               
             ])
         )
 
