@@ -7,6 +7,7 @@ module.exports = {
 
     entry   : {
         'index'             : './src/index.js',
+        'wave'              : './src/wave/index.js',
     },
 
     output: {
