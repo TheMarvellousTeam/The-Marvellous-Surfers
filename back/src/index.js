@@ -11,8 +11,13 @@ let waves = []
 
 let inputs = {}
 
-const WIDTH_PLAYER = 1
-const HIGH_PLAYER = 2
+const PLAYER_WIDTH = 1
+const PLAYER_HEIGHT = 2
+const WAVE_WIDTH = 2
+const WAVE_HEIGHT = 1
+const SHARK_WIDTH = 2
+const SHARK_HEIGHT = 1
+const MIN_SPEED = 1
 
 function dump() {
     return {
@@ -26,7 +31,7 @@ function dump() {
 function serverLoop(com) {
     //input processing
     for ( let id in inputs ) {
-        applyInputOn(inputs[id])  
+        applyInputOn(id, inputs[id])
     }
 
     // update position of each entity
@@ -37,6 +42,8 @@ function serverLoop(com) {
 
     resolveCollisions()
 
+    // TODO don't leave the screen fuckers !
+
     // update client
     com.emit(god.id, 'state', dump())
     for ( let player in surfers ) {
@@ -46,19 +53,42 @@ function serverLoop(com) {
 }
 
 function applyInputOn(id, input) {
-    //TODO blindy apply input
+    //blindy apply Platane's input
+    surfers.find(s => s.id == id).velocity.x += input.vx
 }
 
 function resolveCollisions() {
-    //TODO search for collisions
     for ( let player in surfers ) {
         // player/player
         for ( let player2 in surfers ) {
             if ( player.id != player2.id ) {
                 dx = Math.abs(player.position.x - player2.position.x)
                 dy = Math.abs(player.position.y - player2.position.y)
-                if ( dx < WIDTH_PLAYER && dy < HIGH_PLAYER ) {
-                    //TODO Handle collision    
+                if ( dx < PLAYER_WIDTH && dy < PLAYER_HEIGHT ) {
+                    if ( dx < PLAYER_WIDTH ) {
+                        if ( player.position.x < player2.position.x ) {
+                            player.position.x -= dx / 2
+                            player2.position.x += dx / 2
+                        } else {
+                            player.position.x += dx / 2
+                            player2.position.x -= dx / 2
+                        }
+                    }
+                    if ( dy < PLAYER_HEIGHT ) {
+                        if ( player.position.y < player2.position.y ) {
+                            player.position.y -= dy / 2
+                            player2.position.y += dy / 2
+                        } else {
+                            player.position.y += dy / 2
+                            player2.position.y -= dy / 2
+                        }
+                    }
+                    player.velocity.x = - player.position.x
+                    player2.velocity.x = - player2.position.x
+                    player.state.type = "bump"
+                    player.state.date = new Date()
+                    player2.state.type = "bump"
+                    player2.state.date = new Date()
                 }
             }
         }
@@ -66,16 +96,30 @@ function resolveCollisions() {
         // player/wave
         for ( let wave in waves ) {
             dx = Math.abs(player.position.x - wave.position.x)
-            if ( wave.position.y  ) {
+            if ( player.state.type != "surf" &&
+                 player.position.y - wave.position.y > 0 && player.position.y - wave.position.y < PLAYER_HEIGHT / 2 &&
+                 player.position.x > wave.position.x && player.position.x + PLAYER_WIDTH < wave.position.x + WAVE_WIDTH ) {
 
+                player.velocity.y = wave.velocity.y
+                player.state.type = "surf"
+                player.state.date = new Date()
             }
         } 
 
         // player/shark
         for ( let shark in sharks ) {
+            if ( player.position.x + PLAYER_WIDTH > shark.position.x &&
+                 player.position.x < shark.position.x + SHARK_WIDTH &&
+                 player.position.y + PLAYER_HEIGHT > shark.position.y &&
+                 player.position.y > shark.position.y + SHARK_HEIGHT ) {
+                
+                sharks = sharks.filter(s => s.id == shark.id)
+                player.velocity.y = Math.max(MIN_SPEED, player.velocity.y / 2)
+            }
         }
     
     }
+    
 }
 
 
