@@ -1,7 +1,7 @@
 import * as THREE    from 'three'
 
 const textureBack       = new THREE.TextureLoader().load( require('../../../assets/background/back.png') )
-const textureBubble1    = new THREE.TextureLoader().load( require('../../../assets/background/back.png') )
+const textureWaves     = new THREE.TextureLoader().load( require('../../../assets/background/waves.png') )
 
 export const create = ( state, { renderer } ) => {
 
@@ -9,28 +9,32 @@ export const create = ( state, { renderer } ) => {
 
     renderer.scene.add( container )
     container.name = 'ground'
-    container.position.z = -6
+    container.position.z = -16
+
+    const l = 10000
 
     {
-        const geo = new THREE.PlaneBufferGeometry( 100, 100 )
+        const geo = new THREE.PlaneBufferGeometry( l, l )
         const mat = new THREE.MeshPhongMaterial({
             color: 0xffffff,
             specular: 0x050505,
-            map:textureBack
+            map: textureBack
         })
         const mesh = new THREE.Mesh( geo, mat )
-        container.add( mesh )
+        // container.add( mesh )
     }
 
     {
-        const geo = new THREE.PlaneBufferGeometry( 100, 100 )
+        textureWaves.wrapS = textureWaves.wrapT = THREE.RepeatWrapping
+        textureWaves.repeat.set( l/80, l/80 )
+        const geo = new THREE.PlaneBufferGeometry( l, l )
         const mat = new THREE.MeshPhongMaterial({
-            color: 0xffffff,
-            specular: 0x050505,
-            map:textureBubble1
+            color       : 0xffffff,
+            map         : textureWaves,
+            transparent : true,
         })
         const mesh = new THREE.Mesh( geo, mat )
-        mesh.position.y = -1
+        mesh.position.z = 6
         container.add( mesh )
     }
 

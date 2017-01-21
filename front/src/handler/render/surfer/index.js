@@ -14,8 +14,16 @@ export const create = ( state, { renderer, bus } ) => {
     const sprite_by_id = {}
 
 
-    const getSprite = id =>
-        sprite_by_id[ id ] = ( sprite_by_id[ id ] || createSprite() )
+    const getSprite = id => {
+
+        if ( sprite_by_id[ id ] )
+            return sprite_by_id[ id ]
+
+        sprite_by_id[ id ] = createSprite()
+        sprite_by_id[ id ].name = 'sufer'
+
+        return sprite_by_id[ id ]
+    }
 
     const update = ( surfers ) =>
         surfers.forEach( surfer => {
