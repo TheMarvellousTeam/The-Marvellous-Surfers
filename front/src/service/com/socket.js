@@ -28,7 +28,7 @@ export const create  = ( options = {} ) => {
                 socket.close()
                 socket = null
                 clearTimeout( reconnectTimeout )
-                reconnectTimeout = setTimeout( connect, 1000 )
+                reconnectTimeout = setTimeout( connect, 1000000 )
             })
             .on('message', m => {
 

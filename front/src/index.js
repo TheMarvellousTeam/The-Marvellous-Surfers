@@ -1,12 +1,9 @@
 import 'file-loader?name=index.html!./index.html'
-import {create as createCom}    from './service/com'
 import * as config              from './config'
-import pixi 			from 'pixi.js'
-import {create as createControl}from './control'
+import pixi 			        from 'pixi.js'
+import {state}                    from './iohandler'
 
-//createCom( config.com )
-//   .then( () => 0 )
-
+/*
 let state = {
 
 	surfers:[
@@ -63,6 +60,7 @@ let state = {
 	]
 
 }
+*/
 
 //Permet de definir l'id du joueur associe au client
 let playerId = 1;
@@ -184,6 +182,3 @@ function computeCoords(entity) {
 
 	return {x:x, y:y};
 }
-
-
-createControl()
