@@ -38,7 +38,7 @@ export const create = async config => {
         if ( waiting_player ) {
             waiting_player[socketId] = {name: name, ready: false}
             for ( s in waiting_player ) {
-                com.emit(s, 'players_info', waiting_player)
+                com.emit(s, 'players_info', {you: s, room: waiting_player})
             } 
         }
     })
