@@ -35,44 +35,41 @@ export const create = async config => {
     })
 
     com.on('join', ({ socketId, name }) => {
-        if ( waiting_player ) {
-            waiting_player[socketId] = {name: name, ready: false}
-            for ( s in waiting_player ) {
-                com.emit(s, 'players_info', {you: s, room: waiting_player})
+        console.log("[JOIN] "+name+ " (sid:"+socketId+")")
+        if ( waiting_players ) {
+            waiting_players[socketId] = {name: name, ready: false}
+            for ( let sid in waiting_players ) {
+                com.emit(sid, 'players_info', {you: sid, room: waiting_players})
             } 
         }
     })
 
     com.on('ready', ({ socketId }) => {
-        waiting_player[socketId].ready = true
-        for ( s in waiting_player ) {
-            com.emit(s, 'players_info', waiting_player)
-        } 
+        console.log("[READY] "+waiting_players[socketId].name)
+        waiting_players[socketId].ready = true
         let ready = true 
-        for ( s in waiting_player ) {
-            ready = ready && waiting_player[s].ready
-            if ( ! ready ) {
-                break
-            }
-        }
+        for ( let sid in waiting_players ) {
+            com.emit(sid, 'players_info', {you: sid, room:waiting_players})
+            ready = ready && waiting_players[sid].ready
+        } 
         if ( ready ) {
             // choose and create god
-            let sockets = Object.keys(waiting_player)
+            let sockets = Object.keys(waiting_players)
             god.id = sockets[Math.floor(Math.random() * sockets.length)] 
             god.power = 0
-            god.name = waiting_player[god.id].name
+            god.name = waiting_players[god.id].name
             // send start to god
             com.emit(god, 'start', {type: 'god'})
 
             // send start to players
             let player_interval = Math.floor(100 / sockets.length)
             let i = 0
-            delete waiting_player[god.id]
-            for ( sid in waiting_player ) {
+            delete waiting_players[god.id]
+            for ( let sid in waiting_players ) {
                 // create player
                 players.push({
                     id: sid,
-                    name: waiting_player[s].name,
+                    name: waiting_players[sid].name,
                     position: { x: ++i * player_interval,
                                 y: 0 },
                     velocity: { x: 0,
@@ -81,7 +78,7 @@ export const create = async config => {
                 })
                 com.emit(sid, 'start', {type: 'surfer'})
             }
-            waiting_player = null
+            waiting_players = null // "forbid" join
 
             // start server loop
             setInterval(serverLoop, config.srv.rate)
