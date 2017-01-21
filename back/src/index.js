@@ -22,10 +22,18 @@ function dump() {
 }
 
 function serverLoop(com) {
-    //TODO input processing
+    //input processing
     for ( let id in inputs ) {
-
+        applyInputOn(inputs[id])  
     }
+    resolveCollisions()
+
+    //TODO update position of each entity
+    [...surfers, ...sharks, ...waves].forEach(e => {
+        e.position.x += e.velocity.x
+        e.position.y += e.velocity.y
+    })
+    //TODO possibly modify state of fallen player
 
     // update client
     com.emit(god.id, 'state', dump())
@@ -33,6 +41,17 @@ function serverLoop(com) {
         com.emit(player.id, 'state', dump())
     }
 
+}
+
+function applyInputOn(id, input) {
+    //TODO blindy apply input
+}
+
+function resolveCollisions() {
+    //TODO search for collisions
+    // player/player
+    // player/wave
+    // player/shark
 }
 
 

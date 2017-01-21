@@ -11,6 +11,9 @@ export const create = ( state, {com} ) => {
     })
 
     com.on('start', ({ type }) => {
+        console.log('starting')
+
+        state.gameState = 'run'
         delete state.waiting_room
 
         if ( type == 'surfer' ) {

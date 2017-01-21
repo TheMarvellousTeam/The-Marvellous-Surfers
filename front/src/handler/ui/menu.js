@@ -1,39 +1,46 @@
 let state = null
 
+const div = document.getElementById('waiting_room')
+
 export const create = ( aState, {com} ) => {
     state = aState
     
-    let e = document.getElementById('waiting_room')
-
-    let ul = document.createElement('ul')
     let input = document.createElement('input')
     input.type = 'text'
     input.value = 'Enter your name'
     let go = document.createElement('button')
     go.value = 'Go !'
     go.onclick = function() {
-        e.removeChild(input)
-        e.removeChild(go)
+        div.removeChild(input)
+        div.removeChild(go)
         com.emit('join', {name: input.value})
-        e.appendChild(ul)
     }
-    e.appendChild(input)
-    e.appendChild(go)
-
+    div.appendChild(input)
+    div.appendChild(go)
 }
 
 export const deleteUI = () => {
-    let e = document.getElementById('waiting_room')
-    while ( e.lastChild ) {
-        e.removeChild(e.lastChild)
+    while ( div.lastChild ) {
+        div.removeChild(div.lastChild)
     }
 }
 
-export const renderUI = () => {
+export const setVisible = (visible) => {
+    style = ""
+    if ( visible ) {
+        style = "block"
+    }
+    div.style.display = style
+}
+
+export const render = () => {
+    
     if ( ! state.waiting_room ) {
         deleteUI()
     } else if ( state.waiting_room.to_update ) {
         deleteUI()
+        let ul = document.createElement('ul')
+        div.appendChild(ul)
         for ( let id in state.waiting_room ) {
             let player = state.waiting_room[id]
             let li = document.createElement('li')
