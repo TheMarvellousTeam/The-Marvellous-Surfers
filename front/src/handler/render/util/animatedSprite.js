@@ -1,0 +1,65 @@
+import * as THREE    from 'three'
+
+
+const toAnimate = []
+
+const loop = () => {
+
+    for ( let i=toAnimate.length; i-- ; ) {
+
+        const sprite = toAnimate[i]
+
+        sprite._maxAnimationN = ( sprite._maxAnimationN + 1 ) % sprite._animationLength
+
+        sprite.material.map.offset.x = sprite.material.map.repeat.x * sprite._maxAnimationN
+    }
+
+    setTimeout( loop, 200 )
+}
+loop()
+
+
+// image
+// imageSize        : size of the box in the image sprite batch
+// spriteSize       : size of the sprite in the three world
+// origin           : origin of the sprite in the three world
+// animationLength  : for every state, the number of frame of the animation
+// frameDelay       : delay between two frames
+export const createFactory = ({ image, spriteSize, origin, imageSize, animationLength, frameDelay }) => {
+
+    const max = animationLength.reduce((max,x) => Math.max(max,x),0)
+
+    frameDelay = frameDelay || 20
+
+    return () => {
+
+        const texture   = new THREE.TextureLoader().load( image )
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping
+        texture.repeat.set( 1 / max, 1 / animationLength.length )
+
+        const material  = new THREE.SpriteMaterial({ map: texture, transparent: true })
+        const sprite = new THREE.Sprite( material )
+
+        sprite.material.map.offset.x = 1/3
+
+        sprite.scale.set(spriteSize.x, spriteSize.y, 1)
+
+        sprite._maxAnimationLength      = max
+        sprite._animationLength         = 1
+        sprite._maxAnimationN           = 0
+
+        sprite.setState     = k => {
+            sprite._animationLength = animationLength[ k ]
+            sprite._maxAnimationN   = sprite._maxAnimationN % sprite._animationLength
+            sprite.material.map.offset.y = sprite.material.map.repeat.y * k
+            sprite.material.map.offset.x = sprite.material.map.repeat.x * sprite._maxAnimationN
+        }
+
+        sprite.destroy     = () => 0
+
+        toAnimate.push( sprite )
+
+        return sprite
+    }
+
+}
