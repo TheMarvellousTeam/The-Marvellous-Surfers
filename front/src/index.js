@@ -15,7 +15,7 @@ const service = {}
 
     Promise.all([
         createController().then( x => service.controller = x ),
-        createCom().then( x => service.com = x ),
+        createCom( config.com ).then( x => service.com = x ),
     ])
         .then( () =>
             Promise.all([
