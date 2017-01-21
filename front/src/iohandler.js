@@ -102,8 +102,12 @@ createCom( config.com )
         }            
     })
 
-    com.on('start', () => {
-        
+    com.on('start', ({ type }) => {
+        if ( type == 'surfer' ) {
+            //TODO launch surfer client
+        } else if ( type == 'god' ) {
+            //TODO launch god client
+        }
     })
 
 })
