@@ -17,8 +17,8 @@ export const create = ( state, { renderer, bus } ) => {
         const p = mainSurfer.position
 
         const target = {
-            x : p.x * 0.6,
-            y : p.y// + Math.sin( t/100 )*10,
+            x : p.x * 0.9,
+            y : p.y -70,
         }
 
         const l = {
@@ -26,8 +26,8 @@ export const create = ( state, { renderer, bus } ) => {
             y   : renderer.camera.position.y - target.y,
         }
 
-        const b = 0.06
-        const k = 0.02
+        const b = 0.016
+        const k = 0.002
 
         const ax = - k * l.x - b * v.x
         const ay = - k * l.y - b * v.y

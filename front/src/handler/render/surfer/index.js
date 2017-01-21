@@ -2,11 +2,11 @@ import * as THREE                               from 'three'
 import {createFactory as createSpriteFactory}   from '../util/animatedSprite'
 
 const createSprite = createSpriteFactory({
-    image       : require('../../../assets/surfer/batch.png'),
+    image       : require('../../../assets/surfer/sprites.png'),
 
     spriteSize  : { x:13.3, y:18.7 },
     origin      : { x:13.3 * 0.5, y:18.7 *0.9 },
-    animationLength : [ 3,3 ],
+    animationLength : [ 3 ],
 })
 
 export const create = ( state, { renderer, bus } ) => {
@@ -14,8 +14,16 @@ export const create = ( state, { renderer, bus } ) => {
     const sprite_by_id = {}
 
 
-    const getSprite = id =>
-        sprite_by_id[ id ] = ( sprite_by_id[ id ] || createSprite() )
+    const getSprite = id => {
+
+        if ( sprite_by_id[ id ] )
+            return sprite_by_id[ id ]
+
+        sprite_by_id[ id ] = createSprite()
+        sprite_by_id[ id ].name = 'sufer'
+
+        return sprite_by_id[ id ]
+    }
 
     const update = ( surfers ) =>
         surfers.forEach( surfer => {
@@ -33,7 +41,8 @@ export const create = ( state, { renderer, bus } ) => {
 
 
                 // animation
-                sprite.setState( surfer.velocity.x > 0 ? 1 : 0 )
+                sprite.setState( 0 )
+                // sprite.setState( surfer.velocity.x > 0 ? 1 : 0 )
             }
 
         })

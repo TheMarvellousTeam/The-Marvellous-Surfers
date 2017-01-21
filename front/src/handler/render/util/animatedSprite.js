@@ -37,12 +37,19 @@ export const createFactory = ({ image, spriteSize, origin, imageSize, animationL
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping
         texture.repeat.set( 1 / max, 1 / animationLength.length )
 
-        const material  = new THREE.SpriteMaterial({ map: texture, transparent: true })
-        const sprite = new THREE.Sprite( material )
+
+        const material  = new THREE.MeshBasicMaterial({ map: texture, transparent: true })
+        const geo = new THREE.PlaneBufferGeometry( spriteSize.x, spriteSize.y )
+        const sprite = new THREE.Mesh( geo, material )
+
+        sprite.rotation.x = Math.PI * 0.2
+
+        // const material  = new THREE.SpriteMaterial({ map: texture, transparent: true })
+        // const sprite = new THREE.Sprite( material )
+        // sprite.scale.set(spriteSize.x, spriteSize.y, 1)
 
         sprite.material.map.offset.x = 1/3
 
-        sprite.scale.set(spriteSize.x, spriteSize.y, 1)
 
         sprite._maxAnimationLength      = max
         sprite._animationLength         = 1
