@@ -22,6 +22,11 @@ module.exports = {
                 exclude: /(node_modules|vendors)/,
                 use: 'babel-loader',
             },
+
+            {
+                test: /\.(eot|ttf|woff|woff2|svg|gif|jpg|png|bmp)$/,
+                use: `file-loader?name=${ production ? '' : '[name]-'}[hash:8].[ext]`,
+            },
         ],
     },
 
