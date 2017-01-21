@@ -26,6 +26,22 @@ module.exports = {
     },
 
     plugins : [
+
+        // env var
+        new webpack.DefinePlugin(
+
+            [
+                'COM_HOST',
+                'COM_PORT',
+                'NODE_ENV',
+            ]
+                .reduce( (o,name) =>
+                    !(name in process.env)
+                        ? o
+                        : { ...o, [ 'process.env.'+name ] : `'${ process.env[ name ] }'`}
+                ,{})
+        ),
+
         ...(
             production
                 ? [
@@ -34,6 +50,7 @@ module.exports = {
                 ]
                 : []
         ),
+
     ],
 
     devtool : 'source-map',

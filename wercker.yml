@@ -33,11 +33,17 @@ back-build:
             name: prepare container
             code: |
                 mv ./back/lib/* .
-                mv ./back/node_modules .
                 mv ./back/topology .
                 mv ./back/package.json .
+                mv ./back/yarn.lock .
                 rm -rf ./back
                 rm -rf ./front
+
+                # install production
+                export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
+                HOME=$YARN_CACHE yarn --pure-lockfile --production
+
+                rm ./yarn.lock
 
 
 
@@ -57,7 +63,7 @@ back-push-container:
             password: $GC_JSON_KEY_FILE
             tag: $IMAGE_TAG $WERCKER_GIT_COMMIT
             working-dir: /pipeline/source
-            cmd: node ./lib/core
+            cmd: node -e "require('./index').create(require('./config'))"
 
 back-deploy:
 
