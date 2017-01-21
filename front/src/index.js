@@ -2,6 +2,7 @@ import 'file-loader?name=index.html!./index.html'
 import {create as createCom}    from './service/com'
 import * as config              from './config'
 import pixi 			from 'pixi.js'
+import {create as createControl}from './control'
 
 createCom( config.com )
    .then( () => 0 )
@@ -125,3 +126,6 @@ function computeCoords(entity) {
 
 	return {x:x, y:y};
 }
+
+
+createControl()
