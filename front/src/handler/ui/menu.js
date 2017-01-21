@@ -1,10 +1,12 @@
 let state = null
+let comm = null
 
 const div = document.getElementById('waiting_room')
 
 export const create = ( aState, {com} ) => {
     state = aState
-    
+    comm = com
+     
     let input = document.createElement('input')
     input.type = 'text'
     input.value = 'Enter your name'
@@ -13,7 +15,7 @@ export const create = ( aState, {com} ) => {
     go.onclick = function() {
         div.removeChild(input)
         div.removeChild(go)
-        com.emit('join', {name: input.value})
+        comm.emit('join', {name: input.value})
     }
     div.appendChild(input)
     div.appendChild(go)
@@ -49,7 +51,7 @@ export const render = () => {
                 let ready = document.createElement('button')
                 ready.value = 'Ready !'
                 ready.onclick = function(){
-                    com.emit('ready')
+                    comm.emit('ready')
                     li.removeChild(ready)
                 }
                 li.appendChild(ready)
