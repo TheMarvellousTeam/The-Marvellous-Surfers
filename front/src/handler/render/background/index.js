@@ -13,7 +13,7 @@ export const create = ( state, { renderer, bus } ) => {
     container.name = 'ground'
     container.position.z = -26
 
-    const l = 3000
+    const l = 500
 
     {
         const textureWaves     = new THREE.TextureLoader().load( wavesImage2 )
@@ -31,9 +31,8 @@ export const create = ( state, { renderer, bus } ) => {
         mesh.position.z = -20
         container.add( mesh )
 
-
         bus.on('loop', () => {
-            textureWaves.offset.y = ( 2 + textureWaves.offset.y - 0.002 ) % 1
+            textureWaves.offset.y = ( 1 + state.cammera_offset_y / 600 ) % 1
         })
     }
 
@@ -58,6 +57,10 @@ export const create = ( state, { renderer, bus } ) => {
         const mesh = new THREE.Mesh( geo, mat )
         mesh.position.z = 6
         container.add( mesh )
+
+        bus.on('loop', () => {
+            textureWaves.offset.y = ( 1 + state.cammera_offset_y / 200 ) % 1
+        })
 
         // bus.on('loop', () => {
         //     textureDisplacement.offset.x = ( 2 + textureDisplacement.offset.x - 0.005 ) % 1

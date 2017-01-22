@@ -79,11 +79,11 @@ export const create = ( state, { renderer, bus } ) => {
             {
                 // position
                 object.position.x = surfer.position.x
-                object.position.y = surfer.position.y
+                object.position.y = surfer.position.y - state.cammera_offset_y
 
                 // gizmo
                 object.cube.position.x = surfer.position.x
-                object.cube.position.y = surfer.position.y
+                object.cube.position.y = surfer.position.y - state.cammera_offset_y
 
                 object.helper.update( object )
 
