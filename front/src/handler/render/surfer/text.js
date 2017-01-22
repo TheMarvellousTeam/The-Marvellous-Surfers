@@ -8,10 +8,6 @@ export const create = ( text ) => {
     canvas.width = 300
     canvas.height= 50
 
-    // ctx.rect( 0, 0, 200, 80 )
-    // ctx.fillStyle='#fff'
-    // ctx.fill()
-
     ctx.beginPath()
     ctx.fillStyle='#000'
     ctx.font = '40pt Arial'
