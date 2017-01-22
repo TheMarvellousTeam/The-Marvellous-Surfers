@@ -40,7 +40,11 @@ export const create = ( state, { renderer, bus } ) => {
             object.destroy  = sprite.destroy
             object.setState = sprite.setState
         }
-        {
+
+        if ( surfer.id == state.myId ) {
+
+        } else {
+
             const text = createText( surfer.name )
 
             text.position.z = 30
