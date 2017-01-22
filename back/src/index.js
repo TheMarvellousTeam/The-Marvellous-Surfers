@@ -120,7 +120,7 @@ function resolveCollisions() {
 	waves.forEach((wave) => {
             if ( //player.state.type != 'surf' &&
                  player.position.y - wave.position.y > 0 &&
-                 player.position.y - wave.position.y < PLAYER_HEIGHT / 2 &&
+                 player.position.y - wave.position.y < PLAYER_HEIGHT / 3 &&
                  player.position.x - PLAYER_WIDTH / 2 > wave.position.x - WAVE_WIDTH / 2 && 
                  player.position.x + PLAYER_WIDTH / 2 < wave.position.x + WAVE_WIDTH / 2 ) {
 
@@ -193,16 +193,16 @@ function generateSharks() {
 	if(random > 9) {
 
 		//on selectionne le dernier surfeur
-		const lastSurferPosition = surfers.map(s => s.position.y).reduce(Math.min, Infinity)
-		const y = lastSurferPosition - 30;
+		const surferPosition = surfers.map(s => s.position.y).reduce(Math.max, Infinity)
+		const y = surferPosition + 30;
 
-		const x = Math.random() * (2*BOUND_MAX-WAVE_WIDTH) - BOUND_MAX
-		const wave = {
+		const x = Math.random() * (2*BOUND_MAX-SHARK_WIDTH) - BOUND_MAX
+		const shark = {
 			position : {x:x, y:y},
-			velocity : {x:0, y:10},
+			velocity : {x:0, y:-2},
 			lifetime : 5000 * Math.random() + 3000
 		}
-		waves.push(wave);
+		sharks.push(shark);
 	}
 
 
@@ -268,20 +268,21 @@ export const create = config => {
             // choose and create god
             let sockets = Object.keys(waiting_players)
       // send start to players
-            let player_interval = Math.floor(100 / sockets.length +1) // remove +1 when god arises
-            let i = 0
+            let player_interval = Math.floor(2*BOUND_MAX / sockets.length +1) // remove +1 when god arises
+            let currentPosition = - BOUND_MAX + player_interval
             for ( let sid in waiting_players ) {
                 // create player
                 surfers.push({
                     id: sid,
                     name: waiting_players[sid].name,
                     state: { type: 'ok', date: new Date() },
-                    position: { x: ++i * player_interval,
+                    position: { x: currentPosition,
                                 y: 0 },
                     velocity: { x: 0,
                                 y: MIN_SPEED },
                     orientation: 0
                 })
+                currentPosition += player_interval
                 com.emit(sid, 'start', {type: 'surfer', state: dump()})
             }
             waiting_players = null // "forbid" join

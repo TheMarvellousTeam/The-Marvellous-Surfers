@@ -19,7 +19,7 @@ export const create = ( state, { renderer, bus } ) => {
             return object_by_id[ id ]
 
         object_by_id[ id ] = createSprite()
-        object_by_id[ id ].name = 'wave'
+        object_by_id[ id ].name = 'shark'
 
         return object_by_id[ id ]
     }
@@ -27,7 +27,7 @@ export const create = ( state, { renderer, bus } ) => {
     const update = ( sharks ) => {
 
         Object.keys( object_by_id )
-            .filter( id => !sharks.some( wave => id == wave.id ) )
+            .filter( id => !sharks.some( shark => id == shark.id ) )
             .forEach( id => {
 
                 object_by_id[ id ].parent && object_by_id[ id ].parent.remove( object_by_id[ id ] )
@@ -35,7 +35,7 @@ export const create = ( state, { renderer, bus } ) => {
                 delete object_by_id[ id ]
             })
 
-        sharks.forEach( wave => {
+        sharks.forEach( shark => {
 
             const sprite = getSprite( shark.id )
 
