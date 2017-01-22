@@ -101,11 +101,11 @@ export const createEmitter = config => {
             velocity.z + velocity_amplitude.z * ( Math.random() - 0.5 )
         )
         particule.velocity.normalize()
-        particule.velocity.multiplyScalar( 0.4 )
+        particule.velocity.multiplyScalar( 0.6 )
 
         particule.scale.set( particule.size, particule.size, 1 )
 
-        particule.duration = 0|( 20 + Math.random() * 14 )
+        particule.duration = 0|( 12 + Math.random() * 16 )
         particule.t        = 0
 
         particule.visible = true

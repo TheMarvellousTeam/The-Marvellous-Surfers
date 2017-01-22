@@ -59,13 +59,13 @@ export const create = ( state, { renderer, bus } ) => {
         renderer.scene.add( object )
 
         // bounding box
-        renderer.scene.add( object.helper = new THREE.BoxHelper( object, 0xffff00 ) )
+        // renderer.scene.add( object.helper = new THREE.BoxHelper( object, 0xffff00 ) )
 
         // cube gizmo
         {
-            const cube = new THREE.Mesh( new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial({ color: 0xa120b4 }) )
-            renderer.scene.add( cube )
-            object.cube = cube
+            // const cube = new THREE.Mesh( new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial({ color: 0xa120b4 }) )
+            // renderer.scene.add( cube )
+            // object.cube = cube
         }
 
         // particule
@@ -73,9 +73,9 @@ export const create = ( state, { renderer, bus } ) => {
             const emitter = createEmitter({
                 rate                    : 1,
                 velocity                : new THREE.Vector3(0,-1,0),
-                velocity_amplitude      : new THREE.Vector3(0.3,0,1),
+                velocity_amplitude      : new THREE.Vector3(0.8,0,1),
 
-                position_amplitude      : new THREE.Vector3(15,1,0),
+                position_amplitude      : new THREE.Vector3(12,1,0),
 
             })
             renderer.scene.add( emitter )
@@ -98,14 +98,14 @@ export const create = ( state, { renderer, bus } ) => {
                 object.position.y = surfer.position.y - state.cammera_offset_y
 
                 // gizmo
-                object.cube.position.x = surfer.position.x
-                object.cube.position.y = surfer.position.y - state.cammera_offset_y
+                // object.cube.position.x = surfer.position.x
+                // object.cube.position.y = surfer.position.y - state.cammera_offset_y
 
                 // emitter
                 object.emitter.position.x = surfer.position.x
                 object.emitter.position.y = surfer.position.y - state.cammera_offset_y - 10
 
-                object.helper.update( object )
+                // object.helper.update( object )
 
                 // animation
                 if ( surfer.velocity.x < -0.25 ) {
