@@ -6,19 +6,18 @@ const createSprite = createSpriteFactory({
     image       : require('../../../assets/surfer/batch.png'),
 
     spriteSize  : { x:30, y:30 },
-    origin      : { x:13.3 * 0.5, y:18.7 *0.9 },
     animationLength : [ 3,3,3 ],
 })
 
 export const create = ( state, { renderer, bus } ) => {
 
-    const sprite_by_id = {}
+    const object_by_id = {}
 
 
     const getObject = surfer => {
 
-        if ( sprite_by_id[ surfer.id ] )
-            return sprite_by_id[ surfer.id ]
+        if ( object_by_id[ surfer.id ] )
+            return object_by_id[ surfer.id ]
 
         const object = new THREE.Object3D()
         object.name = 'surfer'
@@ -42,7 +41,7 @@ export const create = ( state, { renderer, bus } ) => {
             object.add( text )
         }
 
-        return sprite_by_id[ surfer.id ] = object
+        return object_by_id[ surfer.id ] = object
     }
 
     const update = ( surfers ) =>
