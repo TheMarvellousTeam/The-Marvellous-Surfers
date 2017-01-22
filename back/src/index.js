@@ -18,7 +18,7 @@ const WAVE_HEIGHT = 1
 const SHARK_WIDTH = 2
 const SHARK_HEIGHT = 1
 const MIN_SPEED = 1
-
+const BOUND_MAX = 50;
 function dump() {
     return {
         god: god,
@@ -40,9 +40,18 @@ function serverLoop(com) {
         e.position.y += e.velocity.y
     })
 
-    //resolveCollisions()
+    resolveCollisions()
 
-    // TODO don't leave the screen fuckers !
+    generateWaves();
+
+    //gestion de la dureee de vie des vagues
+    waves = waves.filter(wave => {
+    
+    	wave.lifetime -= 100;
+	return wave.lifetime > 0;
+    
+    });
+
 
     // update client
     surfers.forEach(player => {
@@ -62,9 +71,13 @@ function applyInputOn(id, input) {
 }
 
 function resolveCollisions() {
-    for ( let player in surfers ) {
-        // player/player
-        for ( let player2 in surfers ) {
+
+
+
+	surfers.forEach((player) => {
+        
+	// player/player
+	surfers.forEach((player2) => {
             if ( player.id != player2.id ) {
                 const dx = Math.abs(player.position.x - player2.position.x)
                 const dy = Math.abs(player.position.y - player2.position.y)
@@ -95,10 +108,10 @@ function resolveCollisions() {
                     player2.state.date = new Date()
                 }
             }
-        }
+        });
 
         // player/wave
-        for ( let wave in waves ) {
+	waves.forEach((wave) => {
             if ( player.state.type != 'surf' &&
                  player.position.y - wave.position.y > 0 && player.position.y - wave.position.y < PLAYER_HEIGHT / 2 &&
                  player.position.x > wave.position.x && player.position.x + PLAYER_WIDTH < wave.position.x + WAVE_WIDTH ) {
@@ -107,10 +120,10 @@ function resolveCollisions() {
                 player.state.type = 'surf'
                 player.state.date = new Date()
             }
-        }
+        });
 
         // player/shark
-        for ( let shark in sharks ) {
+	sharks.forEach((shark) => {
             if ( player.position.x + PLAYER_WIDTH > shark.position.x &&
                  player.position.x < shark.position.x + SHARK_WIDTH &&
                  player.position.y + PLAYER_HEIGHT > shark.position.y &&
@@ -119,12 +132,61 @@ function resolveCollisions() {
                 sharks = sharks.filter(s => s.id == shark.id)
                 player.velocity.y = Math.max(MIN_SPEED, player.velocity.y / 2)
             }
-        }
+        });
 
-    }
+	if(player.position.x <= -BOUND_MAX || player.position.x >= BOUND_MAX) {
+
+		player.position.x = BOUND_MAX * Math.sign(player.position.x);	
+	
+	}
+
+    });
 
 }
 
+function generateWaves() {
+	
+	const random = Math.random() * 10 ;
+
+	//on cree une nouvelle vavgue
+	if(random > 9) {
+	
+		//on selectionne le dernier surfeur
+		const lastSurferPosition = surfers.map(s => s.position.y).reduce(Math.min, Infinity)
+		const y = lastSurferPosition - 30;
+
+		const x = Math.random() * (2*BOUND_MAX-WAVE_WIDTH) - BOUND_MAX
+		const wave = {
+			position : {x:x, y:y},
+			velocity : {x:0, y:10},
+			lifetime : 5000 * Math.random() + 3000
+		}
+		waves.push(wave);
+	}
+}
+
+function generateSharks() {
+	
+	const random = Math.random() * 10 ;
+
+	//on cree une nouvelle vavgue
+	if(random > 9) {
+	
+		//on selectionne le dernier surfeur
+		const lastSurferPosition = surfers.map(s => s.position.y).reduce(Math.min, Infinity)
+		const y = lastSurferPosition - 30;
+
+		const x = Math.random() * (2*BOUND_MAX-WAVE_WIDTH) - BOUND_MAX
+		const wave = {
+			position : {x:x, y:y},
+			velocity : {x:0, y:10},
+			lifetime : 5000 * Math.random() + 3000
+		}
+		waves.push(wave);
+	}
+
+
+}
 
 export const create = config => {
 
@@ -211,6 +273,8 @@ export const create = config => {
     com.on('action', ({socketId, vx}) => {
         inputs[socketId] = vx*2
     })
+
+
 
 
 

@@ -30,6 +30,8 @@ export const create = ( state, services ) => {
         state.surfers = surfers
         state.sharks = sharks
         state.waves = waves
+
+    	console.log(waves);
     })
 
 }
