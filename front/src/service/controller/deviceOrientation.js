@@ -14,7 +14,7 @@ export const isSupported = () =>
                 clearTimeout( timeout )
                 window.removeEventListener('deviceorientation', handler)
                 resolve( false )
-            },200)
+            },800)
         })
 
 export const create = () => {
@@ -22,7 +22,7 @@ export const create = () => {
     const control = {}
 
     window.addEventListener('deviceorientation', event =>
-        control.vx = Math.min(1, Math.max(-1, event.beta / 50 ))
+        control.vx = Math.min(1, Math.max(-1, event.gamma / 50 ))
     )
 
     return () => control
