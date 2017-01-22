@@ -27,7 +27,7 @@
 
     "scripts": {
 
-        "start"             : "webpack-dev-server --devtool source-map --port 9002 --content-base ./ -d",
+        "start"             : "webpack-dev-server --inline --devtool source-map --port 9002 --content-base ./ -d",
 
         "build"             : "rm -rf dist/ && env NODE_ENV=production webpack"
     }

@@ -13,7 +13,7 @@ export const create = ( state, { renderer, bus } ) => {
 
     ;[ 75, -75 ].map( x => {
 
-        const l = 90000
+        const l = 1000
         const geo = new THREE.PlaneBufferGeometry( 30, l )
 
         const _sprite = createSprite()

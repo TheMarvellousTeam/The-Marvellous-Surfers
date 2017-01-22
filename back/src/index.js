@@ -10,6 +10,7 @@ let sharks = []
 let waves = []
 
 let inputs = {}
+let kill_loop = null
 
 const PLAYER_WIDTH = 10
 const PLAYER_HEIGHT = 20
@@ -28,6 +29,7 @@ function dump() {
     }
 }
 
+let d = Date.now()
 function serverLoop(com) {
     //input processing
     for ( let id in inputs ) {
@@ -52,6 +54,8 @@ function serverLoop(com) {
 
     });
 
+    console.log( Date.now() - d  )
+    d = Date.now()
 
     // update client
     surfers.forEach(player => {
@@ -146,7 +150,7 @@ function resolveCollisions() {
 }
 
 function generateWaves() {
-    return
+
 	const random = Math.random() * 100 ;
 
 	//on cree une nouvelle vavgue
@@ -174,7 +178,7 @@ function generateWaves() {
 			velocity : {x:0, y:5 * Math.random() + 6},
 			lifetime : 5000 * Math.random() + 3000
 		}
-		// waves.push(wave);
+		waves.push(wave);
 	}
 }
 
@@ -230,6 +234,9 @@ export const create = config => {
 
 	if(surfers.length  == 0) {
 
+        // kill the game loop
+        clearTimeout( kill_loop )
+
 		waiting_players = {}
 
 	}
@@ -277,9 +284,16 @@ export const create = config => {
             waiting_players = null // "forbid" join
 
             // start server loop
-            setInterval(function() {
-                serverLoop(com)
-            }, config.srv.rate)
+            {
+                const loop = () => {
+                    serverLoop(com)
+
+                    clearTimeout( kill_loop )
+                    kill_loop = setTimeout( loop, config.srv.rate )
+                }
+                loop()
+            }
+
         }
     })
 

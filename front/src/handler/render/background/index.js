@@ -13,28 +13,28 @@ export const create = ( state, { renderer, bus } ) => {
     container.name = 'ground'
     container.position.z = -26
 
-    const l = 100000
+    const l = 3000
 
     {
-        // const textureWaves     = new THREE.TextureLoader().load( wavesImage2 )
-        // textureWaves.wrapS = textureWaves.wrapT = THREE.RepeatWrapping
-        // textureWaves.repeat.set( l/300, l/300 )
-        // const geo = new THREE.PlaneBufferGeometry( l, l )
-        // const mat = new THREE.MeshBasicMaterial({
-        //     color       : 0xffffff,
-        //     map         : textureWaves,
-        //
-        //     transparent : true,
-        //     opacity     : 0.4,
-        // })
-        // const mesh = new THREE.Mesh( geo, mat )
-        // mesh.position.z = -20
-        // container.add( mesh )
-        //
-        //
-        // bus.on('loop', () => {
-        //     textureWaves.offset.y = ( 2 + textureWaves.offset.y - 0.002 ) % 1
-        // })
+        const textureWaves     = new THREE.TextureLoader().load( wavesImage2 )
+        textureWaves.wrapS = textureWaves.wrapT = THREE.RepeatWrapping
+        textureWaves.repeat.set( l/300, l/300 )
+        const geo = new THREE.PlaneBufferGeometry( l, l )
+        const mat = new THREE.MeshBasicMaterial({
+            color       : 0xffffff,
+            map         : textureWaves,
+
+            transparent : true,
+            opacity     : 0.4,
+        })
+        const mesh = new THREE.Mesh( geo, mat )
+        mesh.position.z = -20
+        container.add( mesh )
+
+
+        bus.on('loop', () => {
+            textureWaves.offset.y = ( 2 + textureWaves.offset.y - 0.002 ) % 1
+        })
     }
 
     {

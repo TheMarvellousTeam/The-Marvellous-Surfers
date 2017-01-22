@@ -18,7 +18,7 @@ export const create = ( state, { renderer, bus } ) => {
 
         const target = {
             x : p.x * 0.9,
-            y : p.y -70,
+            y : p.y -90,
         }
 
         const l = {
@@ -26,8 +26,9 @@ export const create = ( state, { renderer, bus } ) => {
             y   : renderer.camera.position.y - target.y,
         }
 
-        const b = 0.016
-        const k = 0.002
+
+        const b = 0.03
+        const k = 0.001
 
         const ax = - k * l.x - b * v.x
         const ay = - k * l.y - b * v.y
@@ -35,12 +36,19 @@ export const create = ( state, { renderer, bus } ) => {
         v.x += ax
         v.y += ay
 
+        v.x += -k * l.x
+        v.y += -k * l.x
+
         renderer.camera.position.x += v.x
         renderer.camera.position.y += v.y
 
         renderer.camera.position.x = target.x
         renderer.camera.position.y = target.y
+        renderer.camera.position.x = 0
+        // renderer.camera.position.y = -90
+        renderer.camera.position.z = 110
         renderer.camera.lookAt( new THREE.Vector3(p.x,p.y,0) )
+        renderer.camera.lookAt( new THREE.Vector3(renderer.camera.position.x,renderer.camera.position.y + 90,0) )
     })
 
 }
