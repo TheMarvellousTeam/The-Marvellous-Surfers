@@ -54,7 +54,11 @@ function serverLoop(com) {
 function applyInputOn(id, input) {
     //blindy apply Platane's input
     let surfer = surfers.find(s => s.id == id);
-    surfer.velocity.x = input
+    if( surfer) {
+
+    	surfer.velocity.x = input
+	}
+
 }
 
 function resolveCollisions() {
@@ -143,7 +147,17 @@ export const create = config => {
 
 	//suppression du surfer in game
 	surfers = surfers.filter(surfer => surfer.id != socketId);
-	com.emit('state', dump())
+	surfers.forEach(surfer => {
+
+		com.emit(surfer.id, 'state',dump())
+	
+	});
+
+	if(surfers.length  == 0) {
+	
+		waiting_players = {}
+	
+	}
     })
 
     com.on('join', ({ socketId, name }) => {
@@ -180,7 +194,7 @@ export const create = config => {
                     position: { x: ++i * player_interval,
                                 y: 0 },
                     velocity: { x: 0,
-                                y: 10 },
+                                y: 2 },
                     orientation: 0
                 })
                 com.emit(sid, 'start', {type: 'surfer', state: dump()})
@@ -195,7 +209,7 @@ export const create = config => {
     })
 
     com.on('action', ({socketId, vx}) => {
-        inputs[socketId] = vx*10
+        inputs[socketId] = vx*2
     })
 
 
