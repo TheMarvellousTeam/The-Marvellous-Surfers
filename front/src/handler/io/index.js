@@ -36,7 +36,6 @@ export const create = ( state, services ) => {
     let lastDate = Date.now()
 
     services.com.on('state', ({surfers, sharks, waves}) => {
-
         // init interpolate
         state.interpolate = state.interpolate || {}
         state.interpolate.previous = state.interpolate.previous || {}

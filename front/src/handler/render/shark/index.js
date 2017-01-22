@@ -51,7 +51,7 @@ export const create = ( state, { renderer, bus } ) => {
 
 
                 // animation
-                sprite.setState( 2 )
+                sprite.setState( 1 )
 
             }
 

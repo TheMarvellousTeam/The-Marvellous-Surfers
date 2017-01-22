@@ -13,11 +13,11 @@ let inputs = {}
 let kill_loop = null
 
 const PLAYER_WIDTH = 5
-const PLAYER_HEIGHT = 20
+const PLAYER_HEIGHT = 10
 const WAVE_WIDTH = 30
 const WAVE_HEIGHT = 5
-const SHARK_WIDTH = 2
-const SHARK_HEIGHT = 1
+const SHARK_WIDTH = 5
+const SHARK_HEIGHT = 5
 const MIN_SPEED = 3
 const BOUND_MAX = 85;
 
@@ -41,7 +41,7 @@ function serverLoop(com) {
     surfers.forEach(e => {
         e.position.x += e.velocity.x * 3
         e.position.y += e.velocity.y
-    }
+    });
     [...sharks, ...waves].forEach(e => {
         e.position.x += e.velocity.x
         e.position.y += e.velocity.y
@@ -59,6 +59,15 @@ function serverLoop(com) {
 	return wave.lifetime > 0;
 
     });
+
+    let minY = Infinity;
+    surfers.forEach((surfer) => {
+        if(surfer.position.y < minY) {
+            minY = surfer.position.y;
+        }
+    });
+
+    sharks = sharks.filter(s => s.position.y > -50)
 
     d = Date.now()
 
@@ -94,20 +103,20 @@ function resolveCollisions() {
                 if ( dx < PLAYER_WIDTH && dy < PLAYER_HEIGHT ) {
                     if ( dx < PLAYER_WIDTH ) {
                         if ( player.position.x < player2.position.x ) {
-                            player.position.x -= dx / 2
-                            player2.position.x += dx / 2
+                            player.position.x -= 2*(PLAYER_WIDTH - dx)
+                            player2.position.x += 2*(PLAYER_WIDTH - dx)
                         } else {
-                            player.position.x += dx / 2
-                            player2.position.x -= dx / 2
+                            player.position.x += 2*(PLAYER_WIDTH - dx)
+                            player2.position.x -= 2*(PLAYER_WIDTH - dx)
                         }
                     }
                     if ( dy < PLAYER_HEIGHT ) {
                         if ( player.position.y < player2.position.y ) {
-                            player.position.y -= dy / 2
-                            player2.position.y += dy / 2
+                            player.position.y -= PLAYER_HEIGHT - dy
+                            player2.position.y += PLAYER_HEIGHT - dy
                         } else {
-                            player.position.y += dy / 2
-                            player2.position.y -= dy / 2
+                            player.position.y += PLAYER_HEIGHT - dy
+                            player2.position.y -= PLAYER_HEIGHT - dy
                         }
                     }
                     player.velocity.x = - player.position.x
@@ -120,10 +129,33 @@ function resolveCollisions() {
             }
         });
 
+
+        // player/shark
+        //
+    for( let i = sharks.length ; i-- ; ) {
+        const shark = sharks[i]
+        const dist = Math.sqrt(Math.pow(player.position.x - shark.position.x, 2) +
+                               Math.pow(player.position.y - shark.position.y, 2))
+            if ( 
+                    //dist < 10 ) {
+                 player.position.x + PLAYER_WIDTH / 2 > shark.position.x - SHARK_WIDTH / 2 &&
+                 player.position.x - PLAYER_WIDTH / 2 < shark.position.x + SHARK_WIDTH / 2 &&
+                 player.position.y + PLAYER_HEIGHT / 2 > shark.position.y - SHARK_HEIGHT / 2 &&
+                 player.position.y - PLAYER_HEIGHT / 2 > shark.position.y + SHARK_HEIGHT / 2 ) {
+                console.log("MIAM MIAM "+shark.id)
+                console.log("shark: "+shark.position.y)
+                console.log("surfer: "+player.position.y)
+                //sharks = sharks.filter(s => s.id != shark.id)
+                player.velocity.y = MIN_SPEED
+                player.state.type = "miam"
+            }
+            if ( player.state.type = "miam" )
+                break;
+    }
         // player/wave
 	waves.forEach((wave) => {
             if ( //player.state.type != 'surf' &&
-                 player.position.y - wave.position.y > 0 &&
+                 player.position.y - wave.position.y > -5 &&
                  player.position.y - wave.position.y < PLAYER_HEIGHT / 2 &&
                  player.position.x - PLAYER_WIDTH / 2 > wave.position.x - WAVE_WIDTH / 2 && 
                  player.position.x + PLAYER_WIDTH / 2 < wave.position.x + WAVE_WIDTH / 2 ) {
@@ -131,18 +163,6 @@ function resolveCollisions() {
                 player.velocity.y = Math.max(wave.velocity.y, player.velocity.y)
                 player.state.type = 'surf'
                 player.state.date = new Date()
-            }
-        });
-
-        // player/shark
-	sharks.forEach((shark) => {
-            if ( player.position.x + PLAYER_WIDTH > shark.position.x &&
-                 player.position.x < shark.position.x + SHARK_WIDTH &&
-                 player.position.y + PLAYER_HEIGHT > shark.position.y &&
-                 player.position.y > shark.position.y + SHARK_HEIGHT ) {
-
-                sharks = sharks.filter(s => s.id == shark.id)
-                player.velocity.y = Math.max(MIN_SPEED, player.velocity.y / 2)
             }
         });
 
@@ -168,13 +188,9 @@ function generateWaves() {
 
 		let minY = Infinity;
 		surfers.forEach((surfer) => {
-
 			if(surfer.position.y < minY) {
-
 				minY = surfer.position.y;
-
 			}
-
 		});
 		const y = minY - 50;
 
@@ -182,8 +198,8 @@ function generateWaves() {
 		const wave = {
 			id:genUID(),
 			position : {x:x, y:y},
-			velocity : {x:0, y:5 * Math.random() + 6},
-			lifetime : 2500 * Math.random() + 5000
+			velocity : {x:0, y: Math.floor(5 * Math.random() + 6)},
+			lifetime : Math.floor(2500 * Math.random() + 5000)
 		}
 		waves.push(wave);
 	}
@@ -194,9 +210,8 @@ function generateSharks() {
 	const random = Math.random() * 100 ;
 
 	//on cree une nouvelle vavgue
-	if(random > 96) {
+	if(sharks.length < 20 && random > 85) {
 
-		//on selectionne le dernier surfeur
 		let maxY = 0;
 		surfers.forEach((surfer) => {
 
@@ -207,15 +222,15 @@ function generateSharks() {
 			}
 
 		});
-		const y = maxY + 50;
+		const y = maxY + 100;
 
 		const x = Math.random() * (2*BOUND_MAX-SHARK_WIDTH) - BOUND_MAX
 		const shark = {
+            id: genUID(),
 			position : {x:x, y:y},
-			velocity : {x:0, y:-2},
-			lifetime : 5000 * Math.random() + 3000
+			velocity : {x:0, y:-5},
 		}
-		sharks.push(shark);
+        sharks.push(shark);
 	}
 
 
