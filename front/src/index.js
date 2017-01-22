@@ -71,3 +71,6 @@ const service = {}
     }
     loop()
 }
+
+
+document.getElementById('title').src = require('./assets/menu/logo.png')
