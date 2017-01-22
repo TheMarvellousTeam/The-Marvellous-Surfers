@@ -31,6 +31,7 @@ export const create = ( aState, services ) => {
     state = aState
     com = services.com
 
+    document.getElementById('playerName').value = generateName()
     setMenuState('connexion');
 
 
@@ -119,4 +120,18 @@ export const render = () => {
         }
         state.waiting_room.to_update = false
     }
+}
+
+
+function generateName() {
+
+	const names = ['Marin', 'James', 'Dory', 'Nemo', 'Body', 'Karen', 'Turtle', 'Zippy', 'Franck', 'Monica', 'Mick',
+	'Crab', 'Dolphin', 'Fish', 'Gordon', 'Harry'];
+	const adjectives = ['Big', 'Mighty', 'Mystic', 'Notorious', 'Kinky', 'Flash', 'Beautiful', 'Graceful', 'Giant', 'Anonymous',
+	'Marvellous', 'Marvellous', 'Flappy', 'Fantastic', 'Captain']
+
+	const adj =  adjectives[Math.floor(adjectives.length * Math.random())];
+	const name =  names[Math.floor(names.length * Math.random())];
+
+	return adj + ' ' + name;
 }

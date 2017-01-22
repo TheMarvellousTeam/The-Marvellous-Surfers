@@ -19,7 +19,7 @@ const WAVE_HEIGHT = 10
 const SHARK_WIDTH = 2
 const SHARK_HEIGHT = 1
 const MIN_SPEED = 3
-const BOUND_MAX = 65;
+const BOUND_MAX = 85;
 
 function dump() {
     return {
