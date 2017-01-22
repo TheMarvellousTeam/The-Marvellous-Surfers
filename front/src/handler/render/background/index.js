@@ -13,7 +13,7 @@ export const create = ( state, { renderer, bus } ) => {
     container.name = 'ground'
     container.position.z = -26
 
-    const l = 500
+    const l = 700
 
     {
         const textureWaves     = new THREE.TextureLoader().load( wavesImage2 )

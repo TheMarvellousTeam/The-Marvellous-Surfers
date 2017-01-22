@@ -2,12 +2,8 @@ import * as THREE    from 'three'
 
 export const create = ( state, { renderer, bus } ) => {
 
-    let t = 0
-
     const v = { x:0, y:0 }
     bus.on('loop', () => {
-
-        t ++
 
         const mainSurfer = state.surfers.find( ({ id }) => id == state.myId )
 

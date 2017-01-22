@@ -19,7 +19,7 @@ export const create = ( state, { renderer, bus } ) => {
             return object_by_id[ id ]
 
         object_by_id[ id ] = createSprite()
-        object_by_id[ id ].name = 'sufer'
+        object_by_id[ id ].name = 'wave'
 
         return object_by_id[ id ]
     }
