@@ -49,8 +49,11 @@ export const create = ( aState, services ) => {
             join( document.getElementById('playerName').value )
     })
 
-    document.getElementById('readyButton').onclick = (event) => {
+    let readyButton = document.getElementById('readyButton');
+    readyButton.onclick = (event) => {
 		com.emit('player_ready');
+    		readyButton.innerHTML ="WAITING FOR OTHER PLAYERS...";
+		readyButton.className = "readyButtonClicked";
     };
 
     /*
@@ -98,11 +101,19 @@ export const render = () => {
             let player = state.waiting_room.players[id]
             let li = document.createElement('li')
             //li.innerHTML = player.name + (player.ready ? ' (ready)' : ' (not ready)')
-            li.innerHTML= player.name;
+	    let span = document.createElement('span');
+	    span.innerHTML = player.name;
 	    li.className ='itemPlayerName';
+	    let checkImg = document.createElement('img');
+	    checkImg.src = 'src/assets/menu/check.png';
+	    checkImg.className = "logocheck";
+	    li.appendChild(checkImg);
+	    li.appendChild(span);
+	    checkImg.style.display = 'none';
 	    if(player.ready) {
 
 	    	li.className = li.className + ' playerReady';
+	    	checkImg.style.display = 'inline-block';
 	    }
 	    ul.appendChild(li)
         }
