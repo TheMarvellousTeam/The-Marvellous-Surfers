@@ -5,6 +5,7 @@ import { create as createWave }         from './wave'
 import { create as createShark }        from './wave'
 import { create as createCamera }       from './camera'
 import { create as createProbe }        from './probe'
+import { create as createFish }         from './fish'
 import { create as createEnable }       from './enable'
 
 export const create = (...args) => Promise.all([
@@ -14,6 +15,7 @@ export const create = (...args) => Promise.all([
     createWave( ...args ),
     createProbe( ...args ),
     createShark( ...args ),
-    // createBoey( ...args ),
+    createBoey( ...args ),
+    // createFish( ...args ),
     createEnable( ...args ),
 ])

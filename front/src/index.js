@@ -55,7 +55,7 @@ const service = {}
                 createMenu( state, service ),
                 createRenderHandler( state, service ),
                 createInterpolationHandler( state, service ),
-                createSwarmHandler( state, service ),
+                // createSwarmHandler( state, service ),
 
             ])
         })
