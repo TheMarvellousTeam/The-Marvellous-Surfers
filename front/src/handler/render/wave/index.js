@@ -10,21 +10,31 @@ const createSprite = createSpriteFactory({
 
 export const create = ( state, { renderer, bus } ) => {
 
-    const sprite_by_id = {}
+    const object_by_id = {}
 
 
     const getSprite = id => {
 
-        if ( sprite_by_id[ id ] )
-            return sprite_by_id[ id ]
+        if ( object_by_id[ id ] )
+            return object_by_id[ id ]
 
-        sprite_by_id[ id ] = createSprite()
-        sprite_by_id[ id ].name = 'sufer'
+        object_by_id[ id ] = createSprite()
+        object_by_id[ id ].name = 'sufer'
 
-        return sprite_by_id[ id ]
+        return object_by_id[ id ]
     }
 
-    const update = ( waves ) =>
+    const update = ( waves ) => {
+
+        Object.keys( object_by_id )
+            .filter( id => !waves.some( wave => id == wave.id ) )
+            .forEach( id => {
+
+                object_by_id[ id ].parent && object_by_id[ id ].parent.remove( object_by_id[ id ] )
+                object_by_id[ id ].destroy()
+                delete object_by_id[ id ]
+            })
+
         waves.forEach( wave => {
 
             const sprite = getSprite( wave.id )
@@ -45,6 +55,7 @@ export const create = ( state, { renderer, bus } ) => {
             }
 
         })
+    }
 
     bus.on('loop', () => update( state.waves || [] ))
 

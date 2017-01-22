@@ -20,18 +20,20 @@ loop()
 
 
 // image
-// imageSize        : size of the box in the image sprite batch
 // spriteSize       : size of the sprite in the three world
-// origin           : origin of the sprite in the three world
 // animationLength  : for every state, the number of frame of the animation
-// frameDelay       : delay between two frames
 export const createFactory = ({ image, spriteSize, origin, imageSize, animationLength, frameDelay }) => {
 
     const max = animationLength.reduce((max,x) => Math.max(max,x),0)
 
     frameDelay = frameDelay || 20
 
+    const pool = []
+
     return () => {
+
+        if ( pool[0] )
+            return pool.shift()
 
         const texture   = new THREE.TextureLoader().load( image )
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping
@@ -62,7 +64,9 @@ export const createFactory = ({ image, spriteSize, origin, imageSize, animationL
             sprite.material.map.offset.x = sprite.material.map.repeat.x * sprite._maxAnimationN
         }
 
-        sprite.destroy     = () => 0
+        sprite.destroy     = () =>
+            pool.push( sprite )
+
 
         toAnimate.push( sprite )
 
