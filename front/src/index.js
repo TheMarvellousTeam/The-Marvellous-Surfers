@@ -14,10 +14,7 @@ import {create as createMenu, render as renderMenu, setVisible as setVisibleMenu
 
 // bootsrap
 const state   = window.state = {
-    surfers:[
-        { id:1, position: {x:0, y:0},velocity : {x:0, y:4} },
-        { id:2, position: {x:0, y:40},velocity : {x:10, y:4} },
-    ],
+    surfers:[],
     waves:[],
     myId:1,
     gameState:'menu'
@@ -32,19 +29,19 @@ const service = {}
         createBus().then( x => service.bus = x ),
     ])
         .then( () => {
-        
-		service.bus.on("changeGameState", (gameState) => {
-		
-			console.log("new game state : " +gameState);
+
+		service.bus.on('changeGameState', (gameState) => {
+
+			console.log('new game state : ' +gameState);
 			switch(gameState) {
-				
-				case "run":
+
+				case 'run':
 					setVisibleMenu(false);
 					break;
-			
+
 			}
 		});
-	
+
 	}).then( () => {
 
             Promise.all([
@@ -56,7 +53,7 @@ const service = {}
 
             ])
         })
-        .catch( err => console.err( err ))
+        .catch( err => console.log( err ))
 }
 
 {
@@ -65,9 +62,11 @@ const service = {}
 
         k ++
 
-        // state.surfers[ 0 ].position.y = k * 0.7
-        // state.surfers[ 0 ].velocity.x = Math.cos( k / 30 ) * 0.3
-        // state.surfers[ 0 ].position.x += state.surfers[ 0 ].velocity.x
+        // if ( state.surfers[ 0 ] ) {
+        //     state.surfers[ 0 ].position.y = k * 0.7
+        //     state.surfers[ 0 ].velocity.x = Math.cos( k / 30 ) * 0.3
+        //     state.surfers[ 0 ].position.x += state.surfers[ 0 ].velocity.x
+        // }
         //
         // state.surfers[ 1 ].position.y = k * 0.7 + Math.sin( k / 70 ) * 20
 
