@@ -38,7 +38,11 @@ function serverLoop(com) {
     }
 
     // update position of each entity
-    [...surfers, ...sharks, ...waves].forEach(e => {
+    surfers.forEach(e => {
+        e.position.x += e.velocity.x * 3
+        e.position.y += e.velocity.y
+    }
+    [...sharks, ...waves].forEach(e => {
         e.position.x += e.velocity.x
         e.position.y += e.velocity.y
     })
