@@ -20,6 +20,7 @@ const SHARK_WIDTH = 2
 const SHARK_HEIGHT = 1
 const MIN_SPEED = 3
 const BOUND_MAX = 65;
+
 function dump() {
     return {
         god: god,
@@ -45,6 +46,7 @@ function serverLoop(com) {
     resolveCollisions()
 
     generateWaves();
+    generateSharks()
 
     //gestion de la dureee de vie des vagues
     waves = waves.filter(wave => {
@@ -54,7 +56,6 @@ function serverLoop(com) {
 
     });
 
-    console.log( Date.now() - d  )
     d = Date.now()
 
     // update client
@@ -117,9 +118,11 @@ function resolveCollisions() {
 
         // player/wave
 	waves.forEach((wave) => {
-            if ( player.state.type != 'surf' &&
-                 player.position.y - wave.position.y > 0 && player.position.y - wave.position.y < PLAYER_HEIGHT / 2 &&
-                 player.position.x > wave.position.x && player.position.x + PLAYER_WIDTH < wave.position.x + WAVE_WIDTH ) {
+            if ( //player.state.type != 'surf' &&
+                 player.position.y - wave.position.y > 0 &&
+                 player.position.y - wave.position.y < PLAYER_HEIGHT / 2 &&
+                 player.position.x - PLAYER_WIDTH / 2 > wave.position.x - WAVE_WIDTH / 2 && 
+                 player.position.x + PLAYER_WIDTH / 2 < wave.position.x + WAVE_WIDTH / 2 ) {
 
                 player.velocity.y = Math.max(wave.velocity.y, player.velocity.y)
                 player.state.type = 'surf'
@@ -182,28 +185,28 @@ function generateWaves() {
 	}
 }
 
-//function generateSharks() {
-//
-//	const random = Math.random() * 10 ;
-//
-//	//on cree une nouvelle vavgue
-//	if(random > 9) {
-//
-//		//on selectionne le dernier surfeur
-//		const lastSurferPosition = surfers.map(s => s.position.y).reduce(Math.min, Infinity)
-//		const y = lastSurferPosition - 30;
-//
-//		const x = Math.random() * (2*BOUND_MAX-WAVE_WIDTH) - BOUND_MAX
-//		const wave = {
-//			position : {x:x, y:y},
-//			velocity : {x:0, y:10},
-//			lifetime : 5000 * Math.random() + 3000
-//		}
-//		waves.push(wave);
-//	}
-//
-//
-//}
+function generateSharks() {
+
+	const random = Math.random() * 10 ;
+
+	//on cree une nouvelle vavgue
+	if(random > 9) {
+
+		//on selectionne le dernier surfeur
+		const lastSurferPosition = surfers.map(s => s.position.y).reduce(Math.min, Infinity)
+		const y = lastSurferPosition - 30;
+
+		const x = Math.random() * (2*BOUND_MAX-WAVE_WIDTH) - BOUND_MAX
+		const wave = {
+			position : {x:x, y:y},
+			velocity : {x:0, y:10},
+			lifetime : 5000 * Math.random() + 3000
+		}
+		waves.push(wave);
+	}
+
+
+}
 
 export const create = config => {
 
@@ -300,10 +303,6 @@ export const create = config => {
     com.on('action', ({socketId, vx}) => {
         inputs[socketId] = vx*3
     })
-
-
-
-
 
 }
 const genUID = () =>

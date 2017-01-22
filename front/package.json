@@ -28,6 +28,8 @@
     "scripts": {
 
         "start"             : "webpack-dev-server --inline --devtool source-map --port 9002 --content-base ./ -d",
+        
+        "demo"             : "webpack-dev-server --devtool source-map --port 80 --host 192.168.1.1 --content-base ./ -d",
 
         "build"             : "rm -rf dist/ && env NODE_ENV=production webpack"
     }
