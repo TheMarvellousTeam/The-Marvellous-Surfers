@@ -1,5 +1,6 @@
 import * as THREE                               from 'three'
 import {createFactory as createSpriteFactory}   from '../util/animatedSprite'
+import {create as createText}                   from './text'
 
 const createSprite = createSpriteFactory({
     image       : require('../../../assets/surfer/batch.png'),
@@ -14,50 +15,69 @@ export const create = ( state, { renderer, bus } ) => {
     const sprite_by_id = {}
 
 
-    const getSprite = id => {
+    const getObject = surfer => {
 
-        if ( sprite_by_id[ id ] )
-            return sprite_by_id[ id ]
+        if ( sprite_by_id[ surfer.id ] )
+            return sprite_by_id[ surfer.id ]
 
-        sprite_by_id[ id ] = createSprite()
-        sprite_by_id[ id ].name = 'sufer'
+        const object = new THREE.Object3D()
+        object.name = 'surfer'
 
-        return sprite_by_id[ id ]
+
+        {
+            const sprite = createSprite()
+            object.add( sprite )
+
+            object.destroy  = sprite.destroy
+            object.setState = sprite.setState
+        }
+        {
+            const text = createText( surfer.name )
+
+            text.position.z = 5
+            text.position.x = 50
+            text.scale.x = 0.3
+            text.scale.y = 0.3
+
+            object.add( text )
+        }
+
+        return sprite_by_id[ surfer.id ] = object
     }
 
     const update = ( surfers ) =>
         surfers.forEach( surfer => {
 
-            const sprite = getSprite( surfer.id )
+            const object = getObject( surfer )
 
-            if( !sprite.parent )
-                renderer.scene.add( sprite )
+            if( !object.parent )
+                renderer.scene.add( object )
 
             // update
             {
                 // position
-                sprite.position.x = surfer.position.x
-                sprite.position.y = surfer.position.y
+                object.position.x = surfer.position.x
+                object.position.y = surfer.position.y
 
 
                 // animation
                 if ( surfer.velocity.x < -0.25 ) {
 
-                    sprite.rotation.z = - ( surfer.velocity.x + 0.25 ) * 0.4
+                    object.rotation.z = - ( surfer.velocity.x + 0.25 ) * 0.4
 
-                    sprite.setState( 1 )
+                    object.setState( 1 )
 
                 } else if ( surfer.velocity.x > 0.25 ) {
 
-                    sprite.rotation.z = - ( surfer.velocity.x - 0.25 ) * 0.4
+                    object.rotation.z = - ( surfer.velocity.x - 0.25 ) * 0.4
 
-                    sprite.setState( 0 )
+                    object.setState( 0 )
 
                 }else {
 
-                    sprite.rotation.z = - surfer.velocity.x * 0.8
+                    object.rotation.z = - surfer.velocity.x * 0.8
 
-                    sprite.setState( 2 )
+                    object.setState( 2 )
                 }
 
             }
