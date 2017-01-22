@@ -46,7 +46,7 @@ export const create = ( state, { renderer, bus } ) => {
             {
                 // position
                 sprite.position.x = wave.position.x
-                sprite.position.y = wave.position.y
+                sprite.position.y = wave.position.y - state.cammera_offset_y
 
 
                 // animation
