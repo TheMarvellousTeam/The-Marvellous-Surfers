@@ -16,13 +16,6 @@ export const create = config => {
     window.scene    = scene
     window.THREE    = THREE
 
-    // add gizmo
-    {
-        const axisHelper = new THREE.AxisHelper( 5 )
-        axisHelper.name = 'axis'
-        scene.add( axisHelper )
-    }
-
     const setSize =  ( width, height ) => {
 
         camera.aspect = width / height

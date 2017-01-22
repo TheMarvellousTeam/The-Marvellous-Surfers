@@ -14,6 +14,6 @@ export const create = (...args) => Promise.all([
     createWave( ...args ),
     createProbe( ...args ),
     createShark( ...args ),
-    createBoey( ...args ),
+    // createBoey( ...args ),
     createEnable( ...args ),
 ])

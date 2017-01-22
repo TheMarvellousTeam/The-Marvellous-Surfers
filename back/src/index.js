@@ -12,10 +12,10 @@ let waves = []
 let inputs = {}
 let kill_loop = null
 
-const PLAYER_WIDTH = 10
+const PLAYER_WIDTH = 5
 const PLAYER_HEIGHT = 20
 const WAVE_WIDTH = 30
-const WAVE_HEIGHT = 10
+const WAVE_HEIGHT = 5
 const SHARK_WIDTH = 2
 const SHARK_HEIGHT = 1
 const MIN_SPEED = 3
@@ -38,7 +38,11 @@ function serverLoop(com) {
     }
 
     // update position of each entity
-    [...surfers, ...sharks, ...waves].forEach(e => {
+    surfers.forEach(e => {
+        e.position.x += e.velocity.x * 3
+        e.position.y += e.velocity.y
+    }
+    [...sharks, ...waves].forEach(e => {
         e.position.x += e.velocity.x
         e.position.y += e.velocity.y
     })
@@ -120,7 +124,7 @@ function resolveCollisions() {
 	waves.forEach((wave) => {
             if ( //player.state.type != 'surf' &&
                  player.position.y - wave.position.y > 0 &&
-                 player.position.y - wave.position.y < PLAYER_HEIGHT / 3 &&
+                 player.position.y - wave.position.y < PLAYER_HEIGHT / 2 &&
                  player.position.x - PLAYER_WIDTH / 2 > wave.position.x - WAVE_WIDTH / 2 && 
                  player.position.x + PLAYER_WIDTH / 2 < wave.position.x + WAVE_WIDTH / 2 ) {
 
@@ -157,7 +161,7 @@ function generateWaves() {
 	const random = Math.random() * 100 ;
 
 	//on cree une nouvelle vavgue
-	if(random > 91) {
+	if(random > 95) {
 
 		//on selectionne le dernier surfeur
 		//const lastSurferPosition = surfers.map(s => s.position.y).reduce(Math.min, Infinity)
@@ -172,14 +176,14 @@ function generateWaves() {
 			}
 
 		});
-		const y = minY - 30;
+		const y = minY - 50;
 
 		const x = Math.random() * (2*BOUND_MAX-WAVE_WIDTH) - BOUND_MAX
 		const wave = {
 			id:genUID(),
 			position : {x:x, y:y},
 			velocity : {x:0, y:5 * Math.random() + 6},
-			lifetime : 5000 * Math.random() + 3000
+			lifetime : 2500 * Math.random() + 5000
 		}
 		waves.push(wave);
 	}
@@ -187,14 +191,23 @@ function generateWaves() {
 
 function generateSharks() {
 
-	const random = Math.random() * 10 ;
+	const random = Math.random() * 100 ;
 
 	//on cree une nouvelle vavgue
-	if(random > 9) {
+	if(random > 96) {
 
 		//on selectionne le dernier surfeur
-		const surferPosition = surfers.map(s => s.position.y).reduce(Math.max, Infinity)
-		const y = surferPosition + 30;
+		let maxY = 0;
+		surfers.forEach((surfer) => {
+
+			if(surfer.position.y > maxY) {
+
+				maxY = surfer.position.y;
+
+			}
+
+		});
+		const y = maxY + 50;
 
 		const x = Math.random() * (2*BOUND_MAX-SHARK_WIDTH) - BOUND_MAX
 		const shark = {
