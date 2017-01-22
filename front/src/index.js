@@ -1,4 +1,6 @@
 import 'file-loader?name=index.html!./index.html'
+import 'style-loader!css-loader!./style.css'
+
 import * as config              from './config'
 
 import {create as createController}     from './service/controller'
@@ -9,6 +11,7 @@ import {create as createBus}            from './service/bus'
 import {create as createIoHandler}      from './handler/io'
 import {create as createInputHandler}   from './handler/input'
 import {create as createRenderHandler}  from './handler/render'
+import {create as createSwarmHandler}    from './handler/swarm'
 import {create as createInterpolationHandler}  from './handler/interpolate'
 
 import {create as createMenu, render as renderMenu, setVisible as setVisibleMenu}         from './handler/ui/menu'
@@ -52,6 +55,7 @@ const service = {}
                 createMenu( state, service ),
                 createRenderHandler( state, service ),
                 createInterpolationHandler( state, service ),
+                createSwarmHandler( state, service ),
 
             ])
         })

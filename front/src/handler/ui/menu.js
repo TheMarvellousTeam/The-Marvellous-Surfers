@@ -53,8 +53,8 @@ export const create = ( aState, services ) => {
     let readyButton = document.getElementById('readyButton');
     readyButton.onclick = (event) => {
 		com.emit('player_ready');
-    		readyButton.innerHTML ="WAITING FOR OTHER PLAYERS...";
-		readyButton.className = "readyButtonClicked";
+    		readyButton.innerHTML ='WAITING FOR OTHER PLAYERS...';
+		readyButton.className = 'readyButtonClicked';
     };
 
     /*
@@ -106,8 +106,8 @@ export const render = () => {
 	    span.innerHTML = player.name;
 	    li.className ='itemPlayerName';
 	    let checkImg = document.createElement('img');
-	    checkImg.src = 'src/assets/menu/check.png';
-	    checkImg.className = "logocheck";
+	    checkImg.src = require('../../assets/menu/check.png');
+	    checkImg.className = 'logocheck';
 	    li.appendChild(checkImg);
 	    li.appendChild(span);
 	    checkImg.style.display = 'none';

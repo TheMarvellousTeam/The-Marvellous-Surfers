@@ -41,8 +41,8 @@ function serverLoop(com) {
     surfers.forEach(e => {
         e.position.x += e.velocity.x * 3
         e.position.y += e.velocity.y
-    }
-    [...sharks, ...waves].forEach(e => {
+    })
+    ;[...sharks, ...waves].forEach(e => {
         e.position.x += e.velocity.x
         e.position.y += e.velocity.y
     })
@@ -125,7 +125,7 @@ function resolveCollisions() {
             if ( //player.state.type != 'surf' &&
                  player.position.y - wave.position.y > 0 &&
                  player.position.y - wave.position.y < PLAYER_HEIGHT / 2 &&
-                 player.position.x - PLAYER_WIDTH / 2 > wave.position.x - WAVE_WIDTH / 2 && 
+                 player.position.x - PLAYER_WIDTH / 2 > wave.position.x - WAVE_WIDTH / 2 &&
                  player.position.x + PLAYER_WIDTH / 2 < wave.position.x + WAVE_WIDTH / 2 ) {
 
                 player.velocity.y = Math.max(wave.velocity.y, player.velocity.y)
