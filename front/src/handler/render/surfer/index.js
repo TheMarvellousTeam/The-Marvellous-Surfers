@@ -59,8 +59,12 @@ export const create = ( state, { renderer, bus } ) => {
 
         renderer.scene.add( object.helper = new THREE.BoxHelper( object, 0xffff00 ) )
 
-
-
+        // cube gizmo
+        {
+            const cube = new THREE.Mesh( new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial({ color: 0xa120b4 }) )
+            renderer.scene.add( cube )
+            object.cube = cube
+        }
 
         return object_by_id[ surfer.id ] = object
     }
@@ -76,6 +80,10 @@ export const create = ( state, { renderer, bus } ) => {
                 // position
                 object.position.x = surfer.position.x
                 object.position.y = surfer.position.y
+
+                // gizmo
+                object.cube.position.x = surfer.position.x
+                object.cube.position.y = surfer.position.y
 
                 object.helper.update( object )
 
