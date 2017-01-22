@@ -13,7 +13,7 @@ export const create = (...args) => Promise.all([
     createBackground( ...args ),
     createSurfer( ...args ),
     createWave( ...args ),
-    createProbe( ...args ),
+    // createProbe( ...args ),
     createShark( ...args ),
     createBoey( ...args ),
     // createFish( ...args ),

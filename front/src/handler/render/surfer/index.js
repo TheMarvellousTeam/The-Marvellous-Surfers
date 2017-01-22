@@ -70,17 +70,16 @@ export const create = ( state, { renderer, bus } ) => {
 
         // particule
         {
-            // const emitter = createEmitter({
-            //     rate                    : 1,
-            //     velocity                : new THREE.Vector3(0,-1,0),
-            //     velocity_amplitude      : new THREE.Vector3(0.8,0,1),
-            //
-            //     position_amplitude      : new THREE.Vector3(12,1,0),
-            //
-            // })
-            // renderer.scene.add( emitter )
-            // object.emitter = emitter
-            object.emitter = new THREE.Object3D()
+            const emitter = createEmitter({
+                rate                    : 1,
+                velocity                : new THREE.Vector3(0,-1,0),
+                velocity_amplitude      : new THREE.Vector3(0.8,0,1),
+
+                position_amplitude      : new THREE.Vector3(12,1,0),
+
+            })
+            renderer.scene.add( emitter )
+            object.emitter = emitter
         }
 
         return object_by_id[ surfer.id ] = object
