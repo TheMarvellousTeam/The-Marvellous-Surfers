@@ -41,13 +41,19 @@ export const create = ( state, { renderer, bus } ) => {
 
 
                 // animation
-                let state = 2
-                if ( surfer.velocity.x < -0.1 )
-                    state = 0
-                else if ( surfer.velocity.x > 0.1 )
-                    state = 1
+                if ( surfer.velocity.x < -0.1 ) {
+                    sprite.setState( 0 )
 
-                sprite.setState( state )
+                } else if ( surfer.velocity.x > 0.1 ) {
+                    sprite.setState( 1 )
+
+                }else {
+
+                    sprite.rotation.y = surfer.velocity.x
+
+                    sprite.setState( 2 )
+                }
+
             }
 
         })
