@@ -7,8 +7,6 @@ export const create = ( state, {com, controller} ) => {
 
     const loop = () => {
 	var action = getInput();
-	console.log("envoi de :" );
-	console.log(action);
         com.emit('action', action )
 
         // requestAnimationFrame( loop )

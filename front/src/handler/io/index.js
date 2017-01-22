@@ -10,7 +10,6 @@ export const create = ( state, services ) => {
     }
 
     services.com.on('players_info', ({you, room}) => {
-        console.log('receive players_info')
         
         state.myId = you
         state.waiting_room.players = room
@@ -18,7 +17,6 @@ export const create = ( state, services ) => {
     })
 
     services.com.on('start', (msg) => {
-        console.log('starting')
         updateState(msg.state)
         state.gameState = 'run'
         delete state.waiting_room

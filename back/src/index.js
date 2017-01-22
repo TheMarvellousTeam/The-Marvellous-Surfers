@@ -40,15 +40,14 @@ function serverLoop(com) {
         e.position.y += e.velocity.y
     })
 
-    resolveCollisions()
+    //resolveCollisions()
 
     // TODO don't leave the screen fuckers !
 
     // update client
-    com.emit(god.id, 'state', dump())
-    for ( let player in surfers ) {
+    surfers.forEach(player => {
         com.emit(player.id, 'state', dump())
-    }
+    });
 
 }
 
@@ -56,7 +55,6 @@ function applyInputOn(id, input) {
     //blindy apply Platane's input
     let surfer = surfers.find(s => s.id == id);
     surfer.velocity.x = input
-    console.log(surfer.name + " vx : " + input);
 }
 
 function resolveCollisions() {
@@ -182,7 +180,7 @@ export const create = config => {
                     position: { x: ++i * player_interval,
                                 y: 0 },
                     velocity: { x: 0,
-                                y: 1 },
+                                y: 10 },
                     orientation: 0
                 })
                 com.emit(sid, 'start', {type: 'surfer', state: dump()})
@@ -197,9 +195,7 @@ export const create = config => {
     })
 
     com.on('action', ({socketId, vx}) => {
-        inputs[socketId] = vx
-	console.log("ACTION");
-	console.log(vx);
+        inputs[socketId] = vx*10
     })
 
 
