@@ -46,10 +46,10 @@ function serverLoop(com) {
 
     //gestion de la dureee de vie des vagues
     waves = waves.filter(wave => {
-    
+
     	wave.lifetime -= 100;
 	return wave.lifetime > 0;
-    
+
     });
 
 
@@ -75,7 +75,7 @@ function resolveCollisions() {
 
 
 	surfers.forEach((player) => {
-       	player.state.type = "ok"; 
+       	player.state.type = 'ok';
 	player.velocity.y = Math.max(MIN_SPEED, player.velocity.y - 0.2)
 	// player/player
 	surfers.forEach((player2) => {
@@ -137,8 +137,8 @@ function resolveCollisions() {
 
 	if(player.position.x <= -BOUND_MAX || player.position.x >= BOUND_MAX) {
 
-		player.position.x = BOUND_MAX * Math.sign(player.position.x);	
-	
+		player.position.x = BOUND_MAX * Math.sign(player.position.x);
+
 	}
 
     });
@@ -146,24 +146,24 @@ function resolveCollisions() {
 }
 
 function generateWaves() {
-	
+    return
 	const random = Math.random() * 100 ;
 
 	//on cree une nouvelle vavgue
 	if(random > 91) {
-	
+
 		//on selectionne le dernier surfeur
 		//const lastSurferPosition = surfers.map(s => s.position.y).reduce(Math.min, Infinity)
-		
+
 		let minY = Infinity;
 		surfers.forEach((surfer) => {
-		
+
 			if(surfer.position.y < minY) {
-			
+
 				minY = surfer.position.y;
-			
+
 			}
-		
+
 		});
 		const y = minY - 30;
 
@@ -174,17 +174,17 @@ function generateWaves() {
 			velocity : {x:0, y:5 * Math.random() + 6},
 			lifetime : 5000 * Math.random() + 3000
 		}
-		waves.push(wave);
+		// waves.push(wave);
 	}
 }
 
 //function generateSharks() {
-//	
+//
 //	const random = Math.random() * 10 ;
 //
 //	//on cree une nouvelle vavgue
 //	if(random > 9) {
-//	
+//
 //		//on selectionne le dernier surfeur
 //		const lastSurferPosition = surfers.map(s => s.position.y).reduce(Math.min, Infinity)
 //		const y = lastSurferPosition - 30;
@@ -225,13 +225,13 @@ export const create = config => {
 	surfers.forEach(surfer => {
 
 		com.emit(surfer.id, 'state',dump())
-	
+
 	});
 
 	if(surfers.length  == 0) {
-	
+
 		waiting_players = {}
-	
+
 	}
     })
 
