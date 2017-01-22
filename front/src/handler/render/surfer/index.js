@@ -41,15 +41,21 @@ export const create = ( state, { renderer, bus } ) => {
 
 
                 // animation
-                if ( surfer.velocity.x < -0.1 ) {
-                    sprite.setState( 0 )
+                if ( surfer.velocity.x < -0.25 ) {
 
-                } else if ( surfer.velocity.x > 0.1 ) {
+                    sprite.rotation.z = - ( surfer.velocity.x + 0.25 ) * 0.4
+
                     sprite.setState( 1 )
+
+                } else if ( surfer.velocity.x > 0.25 ) {
+
+                    sprite.rotation.z = - ( surfer.velocity.x - 0.25 ) * 0.4
+
+                    sprite.setState( 0 )
 
                 }else {
 
-                    sprite.rotation.y = surfer.velocity.x
+                    sprite.rotation.z = - surfer.velocity.x * 0.8
 
                     sprite.setState( 2 )
                 }

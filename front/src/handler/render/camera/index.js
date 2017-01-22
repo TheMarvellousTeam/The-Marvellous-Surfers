@@ -37,6 +37,9 @@ export const create = ( state, { renderer, bus } ) => {
 
         renderer.camera.position.x += v.x
         renderer.camera.position.y += v.y
+
+        renderer.camera.position.x = target.x
+        renderer.camera.position.y = target.y
         renderer.camera.lookAt( new THREE.Vector3(p.x,p.y,0) )
     })
 
