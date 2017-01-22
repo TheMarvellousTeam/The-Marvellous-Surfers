@@ -16,9 +16,11 @@ export const create = ( state, { renderer, bus } ) => {
 
         const p = mainSurfer.position
 
+        state.cammera_offset_y = p.y
+
         const target = {
             x : p.x * 0.9,
-            y : p.y -90,
+            y : p.y -90  - state.cammera_offset_y,
         }
 
         const l = {
@@ -46,9 +48,11 @@ export const create = ( state, { renderer, bus } ) => {
         renderer.camera.position.y = target.y
         renderer.camera.position.x = 0
         // renderer.camera.position.y = -90
+        //
+        //
         renderer.camera.position.z = 110
-        renderer.camera.lookAt( new THREE.Vector3(p.x,p.y,0) )
-        renderer.camera.lookAt( new THREE.Vector3(renderer.camera.position.x,renderer.camera.position.y + 90,0) )
+        renderer.camera.lookAt( new THREE.Vector3(p.x,p.y - state.cammera_offset_y,0) )
+
     })
 
 }

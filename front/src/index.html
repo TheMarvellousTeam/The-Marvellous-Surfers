@@ -15,39 +15,164 @@ body {
 .fullscreen{
 	width:100%;
 	height:100%;
-	background-color:red;
+	background-image:url(src/assets/background/waves.png);
+	background-color:#6dbd9a;
+	background-size:520px 520px;
+	animation: anim 10s infinite linear;
+}
+
+@keyframes anim{
+	0%{
+	
+		background-position:0 0;
+	
+	}
+	100%{
+	
+		background-position:520px 520px;
+	
+	}
 }
 .center{
 	margin:auto;
-	width:80%;
+	padding-top:30px;
+	width:40%;
 	text-align:center;
-	background-color:yellow;
 }
-.playerReady{
-	background-color:green;
-	height:150px;
-}
+
 #playerName{
+
+	border: 3px solid white;
+	background-color:rgba(0,0,0,0);
+	border-radius: 15px;
 	display:block;
 	margin:auto;
+	margin-top: 50px;
+	padding-left: 10px;
 	height:60px;
-	font-size:32px;
-	width:80%;
+	font-size:26px;
+	font-weight:bold;
+	color:white;
+	text-transform:uppercase;
+	width:100%;
+}
+
+#playerName:focus{
+	outline:none;	
+
+}
+#playerName::-webkit-input-placeholder { /* Chrome/Opera/Safari /
+	font-size:26px;
+	font-weight:bold;
+	color:#1f8989;
+}
+#playerName::-moz-placeholder { / Firefox 19+ /
+	font-size:26px;
+	font-weight:bold;
+	color:#1f8989;
+}
+#playerName::-ms-input-placeholder { / IE 10+ /
+	font-size:26px;
+	font-weight:bold;
+	color:#1f8989;
+}
+#playerName::-moz-placeholder { / Firefox 18- */
+	font-size:26px;
+	font-weight:bold;
+	color:#1f8989;
 }
 #connectButton{
 	margin-top:50px;
 	margin-bottom:20px;
 	font-size:24px;
+	width:100%;
+	height:60px;
+	border-radius:15px;
+	border:none;
+	background-color:#1f8989;
+	color:white;
+	font-weight:bold;
+	padding-top:5px;
+}
+#connectButton:active{
+	background-color:#197272;
+}
+#connectButton:focus{
+	outline:none;	
+
 }
 
 #title{
-	font-size:46px;
+	width:100%;
 }
 
-.itemPlayerName{
-	font-size:32px;
+#player-list ul{
+	width:100%;
 	list-style-type:none;
+	padding-left:0px;
+}
+.itemPlayerName{
+	font-size:26px;
+	list-style-type:none;
+	padding-left:0px;
+	height:38px;
+	padding-top:12px;
+	font-weight:bold;
+	text-transform:uppercase;
+	color:#1f8989;
 
+}
+
+.logocheck{
+	margin-right:10px;
+	height:22px;
+}
+.playerReady{
+	color:white;
+}
+
+#readyButton{
+	margin-top:0px;
+	margin-bottom:20px;
+	font-size:24px;
+	width:100%;
+	height:60px;
+	border-radius:15px;
+	border:none;
+	background-color:#e26078;
+	color:white;
+	font-weight:bold;
+	padding-top:5px;
+}
+#readyButton:active{
+	background-color:#c94c67;
+}
+#readyButton:focus{
+	outline:none;	
+
+}
+#readyButton.readyButtonClicked{
+	font-size: 18px;
+	background-color:rgba(31,137,137,0.6);
+	enable:false;
+
+}
+
+
+
+
+
+
+
+
+
+@media only screen and (max-width:600px){
+.center{
+	margin:auto;
+	padding-top:35%;
+	width:80%;
+	text-align:center;
+}
 }
 </style>
 
@@ -55,16 +180,16 @@ body {
 
     <div id="container-menu" class="fullscreen">
     	<div class="center">
-    		<h1 id="title" >Marvellous Surfers</h1>
+		<img id="title" src="src/assets/menu/logo.png"></img>
 		<div id="connexion">
-			<input  id="playerName" type="text" placeholder="Entrez votre nom" value="marin"></input>
-    			<button id="connectButton">Se connecter</button>
+			<input  id="playerName" type="text" placeholder="Enter your name" value="marin"></input>
+    			<button id="connectButton">JOIN A GAME</button>
 		</div>
 
 		<div id="waiting_room" style="display:none">
 			<div id="player-list">
 			</div>
-    			<button id="readyButton">Prêt !</button>
+    			<button id="readyButton">READY</button>
 		</div>
 	</div>
     </div>

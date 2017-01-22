@@ -11,6 +11,7 @@ const createSprite = createSpriteFactory({
 export const create = ( state, { renderer, bus } ) => {
 
     const object_by_id = {}
+    const sprite_by_id = {}
 
 
     const getSprite = id => {
