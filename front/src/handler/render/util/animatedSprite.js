@@ -40,7 +40,7 @@ export const createFactory = ({ image, spriteSize, origin, imageSize, animationL
         texture.repeat.set( 1 / max, 1 / animationLength.length )
 
 
-        const material  = new THREE.MeshBasicMaterial({ map: texture, transparent: true })
+        const material  = new THREE.MeshBasicMaterial({ map: texture, transparent: true, alphaTest: 0.5 })
         const geo = new THREE.PlaneBufferGeometry( spriteSize.x, spriteSize.y )
         const sprite = new THREE.Mesh( geo, material )
 
