@@ -14,7 +14,7 @@ import {create as createRenderHandler}  from './handler/render'
 import {create as createSwarmHandler}    from './handler/swarm'
 import {create as createInterpolationHandler}  from './handler/interpolate'
 
-import {create as createMenu, render as renderMenu, setVisible as setVisibleMenu}         from './handler/ui/menu'
+import {create as createMenu, setVisible as setVisibleMenu}         from './handler/ui/menu'
 
 // bootsrap
 const state   = window.state = {
