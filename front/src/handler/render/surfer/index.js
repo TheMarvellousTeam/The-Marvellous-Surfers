@@ -50,8 +50,8 @@ export const create = ( state, { renderer, bus } ) => {
 
             text.position.z = 30
             text.position.x = 0
-            text.scale.x = 300*0.08
-            text.scale.y = 80*0.08
+            text.scale.x = 500*0.06
+            text.scale.y = 80*0.06
 
             object.add( text )
         }

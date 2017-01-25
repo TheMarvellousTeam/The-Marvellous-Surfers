@@ -6,7 +6,7 @@ export const create = ( text ) => {
     const canvas    = document.createElement('canvas')
     const ctx       = canvas.getContext('2d')
 
-    canvas.width = 300
+    canvas.width = 500
     canvas.height= 80
 
     // ctx.rect( 0, 0, 300, 80 )
@@ -22,9 +22,9 @@ export const create = ( text ) => {
     ctx.fill()
 
     ctx.beginPath()
-    ctx.moveTo(150,80)
-    ctx.lineTo(140,65)
-    ctx.lineTo(160,65)
+    ctx.moveTo(canvas.width/2     , 80)
+    ctx.lineTo(canvas.width/2 +10 , 65)
+    ctx.lineTo(canvas.width/2 -10 , 65)
     ctx.fill()
 
 
