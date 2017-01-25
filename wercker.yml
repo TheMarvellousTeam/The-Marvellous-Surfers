@@ -146,8 +146,8 @@ front-deploy-standalone:
             name: build standalone
             code: |
                 node script/prepare_standalone.js
-                # cd front
-                # yarn run build
+                cd front
+                npm run build
 
         - takuma7/gh-pages:
             token: $GH_TOKEN
