@@ -152,6 +152,11 @@ front-deploy-standalone:
             code: rm -rf node_modules
 
         - script:
+            cwd: back
+            name: rm .babelrc in back ( prevent from failing to build )
+            code: .babelrc
+
+        - script:
             cwd: front
             name: install dependencies with yarn
             code: |
@@ -164,7 +169,7 @@ front-deploy-standalone:
             code: node script/prepare_standalone.js
 
         - script:
-            name: prepare standalone
+            name: build standalone
             cwd: front
             code: yarn run build
 
