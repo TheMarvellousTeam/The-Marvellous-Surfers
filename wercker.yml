@@ -147,18 +147,26 @@ front-deploy-standalone:
     steps:
 
         - script:
+            code: rm -rf node_modules ( front )
             cwd: front
             name: rm node_modules
-            code: rm -rf node_modules
 
         - script:
+            code: rm -rf node_modules ( back )
             cwd: back
-            name: rm .babelrc in back ( prevent from failing to build )
-            code: rm .babelrc
+            name: rm node_modules
 
         - script:
+            name: install dependencies with yarn ( front )
             cwd: front
-            name: install dependencies with yarn
+            code: |
+                npm install -g yarn --quiet --depth 0
+                export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
+                HOME=$YARN_CACHE yarn --pure-lockfile
+
+        - script:
+            name: install dependencies with yarn ( back )
+            cwd: back
             code: |
                 npm install -g yarn --quiet --depth 0
                 export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
