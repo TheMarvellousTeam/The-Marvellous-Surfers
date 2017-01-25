@@ -139,3 +139,16 @@ front-deploy:
                 # set headers for security purpose
                 # will fail : can only set a restricted set of headers
                 # gsutil setmeta -h "x-frame-options:SAMEORIGIN" gs://$BUCKET/index.html
+
+front-deploy-standalone:
+    steps:
+        - script:
+            name: build standalone
+            code: |
+                node script/prepare_standalone.js
+                cd front
+                yarn run build
+
+        - takuma7/gh-pages:
+            token: $GH_TOKEN
+            basedir: ./dist/dist
