@@ -141,6 +141,9 @@ front-deploy:
                 # gsutil setmeta -h "x-frame-options:SAMEORIGIN" gs://$BUCKET/index.html
 
 front-deploy-standalone:
+
+    box: node
+
     steps:
         - script:
             name: build standalone
