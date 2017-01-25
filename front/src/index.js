@@ -16,6 +16,9 @@ import {create as createInterpolationHandler}  from './handler/interpolate'
 
 import {create as createMenu, setVisible as setVisibleMenu}         from './handler/ui/menu'
 
+// will be uncommented to build the standalone ( #yolo )
+// #standalone require('../../back/src').create( require('../../back/src/config') )
+
 // bootsrap
 const state   = window.state = {
     surfers:[],
