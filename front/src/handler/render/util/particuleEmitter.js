@@ -1,8 +1,27 @@
 import * as THREE    from 'three'
 
+const createParticuleImage = () => {
 
-const image = require('../../../assets/particule/bubble.png')
+    const canvas    = document.createElement('canvas')
+    const ctx       = canvas.getContext('2d')
 
+    const l = 32
+
+    canvas.width = l*2
+    canvas.height = l
+
+    ctx.fillStyle = '#c1e2b9'
+    ctx.beginPath()
+    ctx.arc( 0 * l + l/2, l/2, l/2*1, 0, Math.PI*2 )
+    ctx.fill()
+
+    ctx.fillStyle = '#b5d5ae'
+    ctx.beginPath()
+    ctx.arc( 1 * l + l/2, l/2, l/2*0.8, 0, Math.PI*2 )
+    ctx.fill()
+
+    return canvas
+}
 
 // image
 // spriteSize       : size of the sprite in the three world
@@ -68,15 +87,18 @@ export const createEmitter = config => {
         requestAnimationFrame( loop )
     }
 
+    const image = createParticuleImage()
+
     const materials = Array.from({ length: n_sprite })
         .map( (_,i) => {
 
-            const map   = new THREE.TextureLoader().load( image )
+            const map   = new THREE.Texture( image )
+            map.needsUpdate = true
             map.wrapS = map.wrapT = THREE.RepeatWrapping
             map.repeat.set( 1 / n_sprite, 1 )
             map.offset.x = i/n_sprite
 
-            return new THREE.MeshBasicMaterial({ map, transparent: true })
+            return new THREE.MeshBasicMaterial({ map, transparent: true, alphaTest: 0.5 })
         })
 
     const geometry = new THREE.PlaneBufferGeometry( 1, 1 )
