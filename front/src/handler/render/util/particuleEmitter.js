@@ -56,9 +56,9 @@ export const createEmitter = config => {
                 const k = Math.sqrt( 1 - Math.abs( u - 0.5 ) * 2 )
 
                 p.scale.set(
-                    k * p.size,
-                    k * p.size,
-                    k * p.size,
+                    Math.max(0.01, k * p.size),
+                    Math.max(0.01, k * p.size),
+                    Math.max(0.01, k * p.size),
                 )
 
             }
