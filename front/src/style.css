@@ -10,7 +10,7 @@ body {
 
 .fullscreen{
 	width:100%;
-	min-height:100%;
+	height:100%;
 	background-image:url(./assets/background/waves.png);
 	background-color:#6dbd9a;
 	background-size:520px 520px;
@@ -165,7 +165,7 @@ body {
 @media only screen and (max-width:600px){
 .center{
 	margin:auto;
-	padding-top:15%;
+	padding-top:20%;
 	width:80%;
 	text-align:center;
 }
