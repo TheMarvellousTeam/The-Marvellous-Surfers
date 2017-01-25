@@ -153,5 +153,6 @@ front-deploy-standalone:
                 npm run build
 
         - takuma7/gh-pages:
+            cwd: front
             token: $GH_TOKEN
-            basedir: front/dist
+            basedir: ./dist
