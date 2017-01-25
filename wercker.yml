@@ -142,9 +142,16 @@ front-deploy:
 
 front-deploy-standalone:
 
-    box: node
-
     steps:
+
+        - script:
+            cwd: front
+            name: install dependencies with yarn
+            code: |
+                npm install -g yarn --quiet --depth 0
+                export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
+                HOME=$YARN_CACHE yarn --pure-lockfile
+
         - script:
             name: build standalone
             code: |
