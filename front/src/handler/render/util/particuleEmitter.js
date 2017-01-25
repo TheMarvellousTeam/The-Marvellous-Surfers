@@ -68,18 +68,24 @@ export const createEmitter = config => {
         requestAnimationFrame( loop )
     }
 
+    const materials = Array.from({ length: n_sprite })
+        .map( (_,i) => {
+
+            const map   = new THREE.TextureLoader().load( image )
+            map.wrapS = map.wrapT = THREE.RepeatWrapping
+            map.repeat.set( 1 / n_sprite, 1 )
+            map.offset.x = i/n_sprite
+
+            return new THREE.MeshBasicMaterial({ map, transparent: true })
+        })
+
+    const geometry = new THREE.PlaneBufferGeometry( 1, 1 )
+
     const spawn = () => {
 
-        const texture   = new THREE.TextureLoader().load( image )
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping
-        texture.repeat.set( 1 / n_sprite, 1 )
-
-        const material  = new THREE.MeshBasicMaterial({ map: texture, transparent: true })
-        const geo = new THREE.PlaneBufferGeometry( 1, 1 )
-        const particule = new THREE.Mesh( geo, material )
+        const particule = new THREE.Mesh( geometry, materials[0] )
 
         particule.velocity = new THREE.Vector3
-
 
         return particule
     }
@@ -110,7 +116,7 @@ export const createEmitter = config => {
 
         particule.visible = true
 
-        particule.material.map.offset.x = 1/n_sprite * Math.floor( Math.random() * n_sprite )
+        particule.material = materials[ Math.floor( Math.random() * n_sprite ) ]
 
         return particule
     }
