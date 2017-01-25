@@ -154,7 +154,7 @@ front-deploy-standalone:
         - script:
             cwd: back
             name: rm .babelrc in back ( prevent from failing to build )
-            code: .babelrc
+            code: rm .babelrc
 
         - script:
             cwd: front
