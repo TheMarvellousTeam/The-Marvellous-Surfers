@@ -3,7 +3,8 @@
     "version": "0.1.0",
 
     "dependencies": {
-    	"three"		            : "*"
+    	"three"		            : "*",
+        "regenerator-runtime"   : "~0.10.0"
     },
 
     "devDependencies" : {
