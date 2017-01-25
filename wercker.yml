@@ -154,4 +154,4 @@ front-deploy-standalone:
 
         - takuma7/gh-pages:
             token: $GH_TOKEN
-            basedir: ./dist/dist
+            basedir: front/dist
