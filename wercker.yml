@@ -142,7 +142,14 @@ front-deploy:
 
 front-deploy-standalone:
 
+    box: node
+
     steps:
+
+        - script:
+            cwd: front
+            name: rm node_modules
+            code: rm -rf node_modules
 
         - script:
             cwd: front
@@ -153,11 +160,13 @@ front-deploy-standalone:
                 HOME=$YARN_CACHE yarn --pure-lockfile
 
         - script:
-            name: build standalone
-            code: |
-                node script/prepare_standalone.js
-                cd front
-                npm run build
+            name: prepare standalone
+            code: node script/prepare_standalone.js
+
+        - script:
+            name: prepare standalone
+            cwd: front
+            code: yarn run build
 
         - takuma7/gh-pages:
             cwd: front
