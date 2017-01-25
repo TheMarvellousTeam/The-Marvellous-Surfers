@@ -147,14 +147,14 @@ front-deploy-standalone:
     steps:
 
         - script:
-            code: rm -rf node_modules ( front )
+            name: rm node_modules ( front )
             cwd: front
-            name: rm node_modules
+            code: rm -rf node_modules
 
         - script:
-            code: rm -rf node_modules ( back )
+            name: rm node_modules ( back )
+            code: rm -rf node_modules
             cwd: back
-            name: rm node_modules
 
         - script:
             name: install dependencies with yarn ( front )
