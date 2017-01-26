@@ -88,6 +88,22 @@ back-deploy:
             insecure-skip-tls-verify: true
             command: apply -f topology.yml --namespace ${KUBERNETES_NAMESPACE}
 
+back-deploy-appengine:
+
+        box: google/cloud-sdk
+
+        steps:
+
+            - script:
+                name: Activate service account
+                code: |
+                    echo $GC_JSON_KEY_FILE >> secret.json
+                    CLOUDSDK_PYTHON_SITEPACKAGES=1 gcloud auth activate-service-account $GC_ACCOUNT --key-file secret.json
+
+            - script:
+                name: app engine deploy
+                code: |
+                    gcloud app deploy --image-url=eu.gcr.io/$GC_PROJECT/core
 
 front-build:
     steps:

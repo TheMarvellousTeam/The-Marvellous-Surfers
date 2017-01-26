@@ -1,0 +1,7 @@
+service: game-engine
+
+runtime: custom
+env: flex
+
+manual_scaling:
+  instances: 1
