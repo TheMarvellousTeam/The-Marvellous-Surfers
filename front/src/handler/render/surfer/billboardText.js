@@ -6,19 +6,19 @@ export const create = ( text ) => {
     const canvas    = document.createElement('canvas')
     const ctx       = canvas.getContext('2d')
 
-    canvas.width = 500
+    canvas.width = 600
     canvas.height= 80
 
-    // ctx.rect( 0, 0, 300, 80 )
+    // ctx.rect( 0, 0, canvas.width, canvas.height )
     // ctx.fillStyle='#fff'
     // ctx.fill()
 
     ctx.beginPath()
     ctx.fillStyle='#000'
-    ctx.font = '40pt dunkin_sansregular'
+    ctx.font = '34pt dunkin_sansregular'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillText(text,150,40)
+    ctx.fillText(text,canvas.width/2,40)
     ctx.fill()
 
     ctx.beginPath()

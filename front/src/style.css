@@ -1,6 +1,13 @@
+@font-face {
+    font-family: 'dunkin_sansregular';
+    src: url('./assets/font/dunkin_sans-webfont.woff2') format('woff2'),
+         url('./assets/font/dunkin_sans-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+#force-font-loading{ font-family: dunkin_sansregular; }
 
 body {
-    font-family: dunkin_sansregular;
     display: flex;
 }
 #mainScene{ height: 100%; width: 100%; }

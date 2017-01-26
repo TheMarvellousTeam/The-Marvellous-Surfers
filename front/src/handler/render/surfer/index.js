@@ -47,10 +47,10 @@ export const create = ( state, { renderer, bus } ) => {
 
             const text = createText( surfer.name )
 
-            text.position.z = 30
+            text.position.z = 20
             text.position.x = 0
-            text.scale.x = 500*0.06
-            text.scale.y = 80*0.06
+            text.scale.x = 600*0.05
+            text.scale.y = 80*0.05
 
             object.add( text )
         }
