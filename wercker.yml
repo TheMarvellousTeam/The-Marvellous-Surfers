@@ -1,13 +1,10 @@
 
-box:
-    id: mhart/alpine-node:6
-    cmd: /bin/sh
+# box:
+#     id: mhart/alpine-node:6
+#     cmd: /bin/sh
+box: node
 
 back-build:
-
-    box:
-        id: mhart/alpine-node:6
-        cmd: /bin/sh
 
     steps:
 
@@ -44,10 +41,6 @@ back-build:
 
 back-push-container:
 
-    box:
-        id: mhart/alpine-node:6
-        cmd: /bin/sh
-
     steps:
 
         - internal/docker-push:
@@ -61,10 +54,6 @@ back-push-container:
             cmd: node -e "require('./index').create(require('./config'))"
 
 back-deploy:
-
-    box:
-        id: mhart/alpine-node:6
-        cmd: /bin/sh
 
     steps:
         - script:
@@ -89,8 +78,6 @@ back-deploy:
             command: apply -f topology.yml --namespace ${KUBERNETES_NAMESPACE}
 
 back-prepare-appengine:
-
-        box: node
 
         steps:
 
@@ -186,8 +173,6 @@ front-deploy:
                 # gsutil setmeta -h "x-frame-options:SAMEORIGIN" gs://$BUCKET/index.html
 
 front-deploy-standalone:
-
-    box: node
 
     steps:
 
