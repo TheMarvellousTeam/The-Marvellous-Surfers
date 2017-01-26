@@ -14,7 +14,7 @@ export const isSupported = () =>
                 clearTimeout( timeout )
                 window.removeEventListener('deviceorientation', handler)
                 resolve( false )
-            },800)
+            },1200)
         })
 
 export const create = () => {

@@ -30,7 +30,6 @@ function dump() {
     }
 }
 
-let d = Date.now()
 function serverLoop(com) {
     //input processing
     for ( let id in inputs ) {
@@ -68,8 +67,6 @@ function serverLoop(com) {
     });
 
     sharks = sharks.filter(s => s.position.y > -50)
-
-    d = Date.now()
 
     // update client
     surfers.forEach(player => {
@@ -134,22 +131,20 @@ function resolveCollisions() {
         //
     for( let i = sharks.length ; i-- ; ) {
         const shark = sharks[i]
-        const dist = Math.sqrt(Math.pow(player.position.x - shark.position.x, 2) +
-                               Math.pow(player.position.y - shark.position.y, 2))
-            if ( 
+            if (
                     //dist < 10 ) {
                  player.position.x + PLAYER_WIDTH / 2 > shark.position.x - SHARK_WIDTH / 2 &&
                  player.position.x - PLAYER_WIDTH / 2 < shark.position.x + SHARK_WIDTH / 2 &&
                  player.position.y + PLAYER_HEIGHT / 2 > shark.position.y - SHARK_HEIGHT / 2 &&
                  player.position.y - PLAYER_HEIGHT / 2 > shark.position.y + SHARK_HEIGHT / 2 ) {
-                console.log("MIAM MIAM "+shark.id)
-                console.log("shark: "+shark.position.y)
-                console.log("surfer: "+player.position.y)
+                console.log('MIAM MIAM '+shark.id)
+                console.log('shark: '+shark.position.y)
+                console.log('surfer: '+player.position.y)
                 //sharks = sharks.filter(s => s.id != shark.id)
                 player.velocity.y = MIN_SPEED
-                player.state.type = "miam"
+                player.state.type = 'miam'
             }
-            if ( player.state.type = "miam" )
+            if ( player.state.type = 'miam' )
                 break;
     }
         // player/wave
@@ -257,11 +252,7 @@ export const create = config => {
 
 	//suppression du surfer in game
 	surfers = surfers.filter(surfer => surfer.id != socketId);
-	surfers.forEach(surfer => {
 
-		com.emit(surfer.id, 'state',dump())
-
-	});
 
 	if(surfers.length  == 0) {
 
@@ -280,6 +271,19 @@ export const create = config => {
             for ( let sid in waiting_players ) {
                 com.emit(sid, 'players_info', {you: sid, room: waiting_players})
             }
+        } else {
+            surfers.push({
+                id: socketId,
+                name: name,
+                state: { type: 'ok', date: new Date() },
+                position: { x: 0,
+                            y: surfers.reduce( ( min, suffer ) => Math.min( min, suffer.position.y ), Infinity )  },
+                velocity: { x: 0,
+                            y: MIN_SPEED },
+                orientation: 0
+            })
+            com.emit(socketId, 'players_info', {you: socketId, room: {}})
+            com.emit(socketId, 'start', {type: 'surfer', state: dump()})
         }
     })
 

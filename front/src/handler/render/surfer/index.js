@@ -24,7 +24,6 @@ export const create = ( state, { renderer, bus } ) => {
 
     const object_by_id = {}
 
-
     const getObject = surfer => {
 
         if ( object_by_id[ surfer.id ] )
@@ -85,7 +84,7 @@ export const create = ( state, { renderer, bus } ) => {
         return object_by_id[ surfer.id ] = object
     }
 
-    const update = ( surfers ) =>
+    const update = ( surfers ) => {
         surfers.forEach( surfer => {
 
             const object = getObject( surfer )
@@ -130,6 +129,16 @@ export const create = ( state, { renderer, bus } ) => {
             }
 
         })
+
+        // remove dead surfers
+        Object.keys( object_by_id )
+            .filter( id => !surfers.some( x => id == x.id ) )
+            .forEach( id => {
+                object_by_id[ id ].destroy()
+                object_by_id[ id ].parent && object_by_id[ id ].parent.remove( object_by_id[ id ] )
+                delete object_by_id[ id ]
+            })
+    }
 
     bus.on('loop', () => update( state.surfers || [] ))
 
