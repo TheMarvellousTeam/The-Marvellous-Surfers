@@ -104,7 +104,7 @@ back-deploy-appengine:
                 name: app engine deploy
                 code: |
                     gcloud config set project $GC_PROJECT
-                    gcloud app deploy --image-url=eu.gcr.io/$GC_PROJECT/core
+                    gcloud app deploy --image-url=eu.gcr.io/$GC_PROJECT/core:$WERCKER_GIT_COMMIT
 
 front-build:
     steps:
