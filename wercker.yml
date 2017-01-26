@@ -88,6 +88,34 @@ back-deploy:
             insecure-skip-tls-verify: true
             command: apply -f topology.yml --namespace ${KUBERNETES_NAMESPACE}
 
+back-prepare-appengine:
+
+        box: google/cloud-sdk
+
+        steps:
+
+            - script:
+                cwd: back
+                name: install dependencies with yarn
+                code: |
+                    npm install -g yarn --quiet --depth 0
+                    export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
+                    HOME=$YARN_CACHE yarn --pure-lockfile
+
+            - script:
+                cwd: back
+                name: build
+                code: yarn run build
+
+            - script:
+                name: clean up
+                code: |
+                    mkdir -p lib
+                    mv back/lib/* lib
+                    mv back/package.json package.json
+                    rm -rf back
+                    rm -rf front
+
 back-deploy-appengine:
 
         box: google/cloud-sdk
@@ -101,16 +129,10 @@ back-deploy-appengine:
                     CLOUDSDK_PYTHON_SITEPACKAGES=1 gcloud auth activate-service-account $GC_ACCOUNT --key-file secret.json
 
             - script:
-                name: clean up
-                code: |
-                    rm -rf back
-                    rm -rf front
-
-            - script:
                 name: app engine deploy
                 code: |
                     gcloud config set project $GC_PROJECT
-                    gcloud app deploy --image-url=eu.gcr.io/$GC_PROJECT/core:$WERCKER_GIT_COMMIT
+                    gcloud app deploy
 
 front-build:
     steps:
