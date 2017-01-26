@@ -90,7 +90,7 @@ back-deploy:
 
 back-prepare-appengine:
 
-        box: google/cloud-sdk
+        box: node
 
         steps:
 
