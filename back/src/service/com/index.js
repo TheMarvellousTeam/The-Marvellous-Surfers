@@ -7,7 +7,7 @@ export const create = config => {
     const ee     = new EventEmitter
     ee._emit = ee.emit
 
-    const server = engineIo.listen( config.port )
+    const server = engineIo.listen( config.port, err => console.log( err ? err : `listening to port ${config.port}` ) )
 
     ee.emit = ( socketId, type, payload={}, meta={} ) =>
         server.clients[ socketId ] && server.clients[ socketId ].send( JSON.stringify({ type, payload, meta }) )
