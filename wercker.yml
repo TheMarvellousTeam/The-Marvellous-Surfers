@@ -101,6 +101,12 @@ back-deploy-appengine:
                     CLOUDSDK_PYTHON_SITEPACKAGES=1 gcloud auth activate-service-account $GC_ACCOUNT --key-file secret.json
 
             - script:
+                name: clean up
+                code: |
+                    rm -rf back
+                    rm -rf front
+
+            - script:
                 name: app engine deploy
                 code: |
                     gcloud config set project $GC_PROJECT
