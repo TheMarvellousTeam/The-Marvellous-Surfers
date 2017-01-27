@@ -1,6 +1,9 @@
-import * as THREE    from 'three'
+import * as THREE       from 'three'
+import { StereoEffect } from './StereoEffect'
 
-export const create = config => {
+export const create = (config = {}) => {
+
+    let vr = false
 
     const camera    = new THREE.PerspectiveCamera( 50, 1, 0.01, 3000 )
     camera.position.set( 0, 0, 120 )
@@ -13,6 +16,9 @@ export const create = config => {
     renderer.setClearColor(0x6DBD9A, 1)
     renderer.setPixelRatio(window.devicePixelRatio)
 
+    const effect = new StereoEffect( renderer )
+
+
     window.scene    = scene
     window.THREE    = THREE
 
@@ -22,10 +28,14 @@ export const create = config => {
         camera.updateProjectionMatrix ()
 
         renderer.setSize(width, height)
+        effect.setSize(width, height)
     }
 
     const render = () =>
-        renderer.render(scene, camera)
+        vr
+            ? effect.render( scene, camera )
+            : renderer.render(scene, camera)
+
 
 
     // render loop
@@ -39,6 +49,7 @@ export const create = config => {
     }
 
     // attach canvas
+    const ratio = 1
     const attach = () => {
 
         const container = document.getElementById('mainScene')
@@ -47,9 +58,6 @@ export const create = config => {
         setTimeout( () =>  {
 
             const {width, height} = container.getBoundingClientRect()
-
-
-            const ratio = 1
 
             setSize( width*ratio, height*ratio )
 
@@ -64,6 +72,12 @@ export const create = config => {
         })
     }
 
+    window.addEventListener('resize', () => {
+        const container = document.getElementById('mainScene')
+        const {width, height} = container.getBoundingClientRect()
+        setSize( width*ratio, height*ratio )
+    })
+
     const detach = () => {
         const canvas = renderer.domElement
         const container = document.getElementById('mainScene')
@@ -75,7 +89,10 @@ export const create = config => {
     const attached = () =>
         !!renderer.domElement.parentNode
 
+    const setVr = x =>
+        vr = x
+
     detach()
 
-    return Promise.resolve({ scene, camera, attach, detach, attached })
+    return Promise.resolve({ scene, camera, attach, detach, attached, setVr })
 }

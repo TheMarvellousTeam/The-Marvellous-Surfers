@@ -10,10 +10,14 @@ export const create = () => {
 
     const control = {}
 
-    const {width}   = document.body.getBoundingClientRect()
+    let {width}   = document.body.getBoundingClientRect()
+
+    window.addEventListener('resize', () =>
+        width = document.body.getBoundingClientRect().width
+    )
 
     const mouseHandler = event =>
-        control.vx = Math.min(1, Math.max(-1, ( getPointerX(event) / width - 0.5 )*2.1 ))
+        control.mx = getPointerX(event) / width
 
     document.body.addEventListener('mousemove', mouseHandler )
     document.body.addEventListener('touchmove', mouseHandler )
