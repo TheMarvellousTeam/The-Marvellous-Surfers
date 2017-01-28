@@ -1,5 +1,5 @@
 import * as THREE       from 'three'
-import { StereoEffect } from './StereoEffect'
+import { StereoEffect } from './stereoEffect'
 
 export const create = (config = {}) => {
 
