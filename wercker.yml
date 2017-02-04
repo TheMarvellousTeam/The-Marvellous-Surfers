@@ -40,8 +40,9 @@ front-build:
             code: yarn run build
 
         - script:
-            name: bundle multi
+            name: bundle standalone
             code: |
+                mkdir dist/standalone
                 mv front/dist/* dist/standalone
 
 front-deploy:
