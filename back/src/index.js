@@ -1,6 +1,7 @@
 import {create as createCom}    from './service/com'
 import regeneratorRuntime       from 'regenerator-runtime'
 
+console.log('starting ...')
 
 let waiting_players = {}
 

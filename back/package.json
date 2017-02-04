@@ -13,9 +13,16 @@
         "babel-preset-stage-2"  : "~6.16.0",
         "babel-register"        : "~6.18.0"
     },
+    "engines": {
+        "node": "7"
+    },
     "scripts": {
         "start"                 : "node -e \"require('./lib/index').create(require('./lib/config'))\"",
 
-        "build"                 : "rm -rf lib && babel --out-dir lib --ignore node_modules/**/*.js,script/*.js ./src"
+        "build"                 : "rm -rf lib && babel --out-dir lib --ignore node_modules/**/*.js,script/*.js ./src",
+
+        "prepare:heroku"        : "npm run build && cp package.json lib/package.json && echo web: node -e \"require('./index').create(require('./config'))\" > lib/Procfile",
+        "deploy:heroku"         : "cd lib && git init && git remote add heroku https://git.heroku.com/still-stream-11078.git && git add . && git commit -m \":fish:\" && git push --force heroku master",
+        "log:heroku"            : "heroku logs --tail --app still-stream-11078"
     }
 }
