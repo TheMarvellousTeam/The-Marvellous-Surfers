@@ -1,3 +1,4 @@
+box: node
 
 front-build:
     steps:
