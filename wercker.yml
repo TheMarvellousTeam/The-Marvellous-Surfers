@@ -1,187 +1,6 @@
 
-# box:
-#     id: mhart/alpine-node:6
-#     cmd: /bin/sh
-box: node
-
-back-build:
-
-    steps:
-
-        - script:
-            cwd: back
-            name: install dependencies with yarn
-            code: |
-                npm install -g yarn --quiet --depth 0
-                export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
-                HOME=$YARN_CACHE yarn --pure-lockfile
-
-        - script:
-            cwd: back
-            name: build
-            code: yarn run build
-
-        - script:
-            name: prepare container
-            code: |
-                mv ./back/lib/* .
-                mv ./back/topology .
-                mv ./back/package.json .
-                mv ./back/yarn.lock .
-                rm -rf ./back
-                rm -rf ./front
-
-                # install production
-                export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
-                HOME=$YARN_CACHE yarn --pure-lockfile --production
-
-                rm ./yarn.lock
-
-
-
-back-push-container:
-
-    steps:
-
-        - internal/docker-push:
-            name: push container
-            repository: eu.gcr.io/$GC_PROJECT/core
-            registry: https://gcr.io
-            username : _json_key
-            password: $GC_JSON_KEY_FILE
-            tag: $IMAGE_TAG $WERCKER_GIT_COMMIT
-            working-dir: /pipeline/source
-            cmd: node -e "require('./index').create(require('./config'))"
-
-back-deploy:
-
-    steps:
-        - script:
-            name: generate version label
-            code: |
-                export APP_VERSION=`node -e "console.log(require('./package.json').version+'-'+process.env.WERCKER_GIT_COMMIT.slice(0,7))"`
-                echo $APP_VERSION
-
-        - script:
-            name: generate config from template
-            code: |
-                cat topology/*.yml | node -e "require('readline').createInterface({input:process.stdin}).on('line', l => console.log( l.replace(/\\$\\{ *(\\w*) *\\}/g, (_,a) => process.env[ a ]||'' )) )" > topology.yml
-                # /!\ this will show sensible informations
-                cat topology.yml
-
-        - kubectl:
-            name: rolling update deployment
-            server: $KUBERNETES_MASTER
-            username: $KUBERNETES_USERNAME
-            password: $KUBERNETES_PASSWORD
-            insecure-skip-tls-verify: true
-            command: apply -f topology.yml --namespace ${KUBERNETES_NAMESPACE}
-
-prepare-appengine:
-    steps:
-        - script:
-            name: install dependencies with yarn
-            cwd: back
-            code: |
-                npm install -g yarn --quiet --depth 0
-                export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
-                HOME=$YARN_CACHE yarn --pure-lockfile
-
-        - script:
-            name: build
-            cwd: back
-            code: yarn run build
-
-        - script:
-            name: clean up
-            code: |
-                mkdir -p lib
-                mv back/lib/* lib
-                mv back/package.json package.json
-                rm -rf back
-                rm -rf front
-                rm -rf .git
-
-deploy-appengine:
-    box: google/cloud-sdk
-    steps:
-
-        - script:
-            name: Activate service account
-            code: |
-                echo $GC_JSON_KEY_FILE >> secret.json
-                CLOUDSDK_PYTHON_SITEPACKAGES=1 gcloud auth activate-service-account $GC_ACCOUNT --key-file secret.json
-
-        - script:
-            name: app engine deploy
-            code: |
-                gcloud config set project $GC_PROJECT
-                gcloud app deploy
-
 front-build:
     steps:
-
-        - script:
-            cwd: front
-            name: install dependencies with yarn
-            code: |
-                npm install -g yarn --quiet --depth 0
-                export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
-                HOME=$YARN_CACHE yarn --pure-lockfile
-
-        - script:
-            cwd: front
-            name: build
-            code: yarn run build
-
-
-front-deploy:
-
-    box: google/cloud-sdk
-
-    steps:
-
-        - script:
-            name: Activate service account
-            code: |
-                echo $GC_JSON_KEY_FILE >> secret.json
-                CLOUDSDK_PYTHON_SITEPACKAGES=1 gcloud auth activate-service-account $GC_ACCOUNT --key-file secret.json
-
-        - script:
-            name: Upload to store
-            code: |
-                # create the bucket
-                gsutil mb -c STANDARD -l EUROPE-WEST1 -p $GC_PROJECT gs://$BUCKET || echo 1
-
-                # sync the folder dist with the bucket ( options -d is for removing from the bucket )
-                gsutil -m rsync -r -d front/dist gs://$BUCKET
-
-                # use gzip with this files
-                gsutil -m cp -r -z html,css,js,xml,txt,json,map,svg front/dist/* gs://$BUCKET
-
-                # set the bucket accessibility
-                gsutil -m acl set -R -a public-read gs://$BUCKET
-
-                # set the bucket index and 404 files
-                gsutil web set -m index.html -e index.html gs://$BUCKET
-
-                # set headers for security purpose
-                # will fail : can only set a restricted set of headers
-                # gsutil setmeta -h "x-frame-options:SAMEORIGIN" gs://$BUCKET/index.html
-
-front-deploy-standalone:
-
-    steps:
-
-        - script:
-            name: rm node_modules ( front )
-            cwd: front
-            code: rm -rf node_modules
-
-        - script:
-            name: rm node_modules ( back )
-            code: rm -rf node_modules
-            cwd: back
 
         - script:
             name: install dependencies with yarn ( front )
@@ -200,6 +19,17 @@ front-deploy-standalone:
                 HOME=$YARN_CACHE yarn --pure-lockfile
 
         - script:
+            name: build multi
+            cwd: front
+            code: yarn run build
+
+        - script:
+            name: bundle multi
+            code: |
+                mkdir dist
+                mv front/dist/* dist
+
+        - script:
             name: prepare standalone
             code: node script/prepare_standalone.js
 
@@ -208,7 +38,13 @@ front-deploy-standalone:
             cwd: front
             code: yarn run build
 
+        - script:
+            name: bundle multi
+            code: |
+                mv front/dist/* dist/standalone
+
+front-deploy:
+    steps:
         - takuma7/gh-pages:
-            cwd: front
             token: $GH_TOKEN
             basedir: ./dist
