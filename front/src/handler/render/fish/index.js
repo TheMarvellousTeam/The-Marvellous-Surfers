@@ -14,7 +14,7 @@ export const create = ( state, { renderer, bus } ) => {
         if ( object_by_id[ id ] )
             return object_by_id[ id ]
 
-        const object = new THREE.Mesh( new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial({ color: 0xa120b4 }) )
+        const object = new THREE.Mesh( new THREE.BoxGeometry(4,4,4), new THREE.MeshBasicMaterial({ color: 0xa120b4 }) )
 
         container.add( object )
 

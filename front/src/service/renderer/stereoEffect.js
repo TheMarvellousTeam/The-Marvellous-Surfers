@@ -36,13 +36,26 @@ export const StereoEffect = THREE.StereoEffect = function ( renderer ) {
 		if ( renderer.autoClear ) renderer.clear();
 		renderer.setScissorTest( true );
 
-		renderer.setScissor( 0, 0, size.width / 2, size.height );
-		renderer.setViewport( 0, 0, size.width / 2, size.height );
-		renderer.render( scene, _stereo.cameraL );
+        if ( !false ) {
+            // horizontal
+    		renderer.setScissor( 0, 0, size.width / 2, size.height );
+    		renderer.setViewport( 0, 0, size.width / 2, size.height );
+    		renderer.render( scene, _stereo.cameraL );
 
-		renderer.setScissor( size.width / 2, 0, size.width / 2, size.height );
-		renderer.setViewport( size.width / 2, 0, size.width / 2, size.height );
-		renderer.render( scene, _stereo.cameraR );
+    		renderer.setScissor( size.width / 2, 0, size.width / 2, size.height );
+    		renderer.setViewport( size.width / 2, 0, size.width / 2, size.height );
+    		renderer.render( scene, _stereo.cameraR );
+
+        } else {
+            // vertical
+            // renderer.setScissor( 0, 0, size.width , size.height /2 );
+            // renderer.setViewport( 0, 0, size.width , size.height / 2 );
+            // renderer.render( scene, _stereo.cameraL );
+
+            // renderer.setScissor( size.width / 2, 0, size.width / 2, size.height );
+            // renderer.setViewport( size.width / 2, 0, size.width / 2, size.height );
+            // renderer.render( scene, _stereo.cameraR );
+        }
 
 		renderer.setScissorTest( false );
 

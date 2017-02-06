@@ -46,7 +46,7 @@ export const create = ( state, { renderer, bus } ) => {
         // renderer.camera.position.y = -90
         //
         //
-        renderer.camera.position.z = 110
+        renderer.camera.position.z = 410
         renderer.camera.lookAt( new THREE.Vector3(p.x,p.y - state.cammera_offset_y,0) )
 
     })

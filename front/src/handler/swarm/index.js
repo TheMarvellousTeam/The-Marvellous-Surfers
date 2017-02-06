@@ -8,7 +8,7 @@ const fishFn = createRepulsion( 1, 0.2, 0.95, 10 )
 
 export const create = ( state, { bus } ) => {
 
-    const MAX_ACC = 0.1
+    const MAX_ACC = 5
 
     const fishs = Array.from({ length: 20 })
         .map( (_,i) =>
@@ -27,17 +27,9 @@ export const create = ( state, { bus } ) => {
         }
     ]
 
-    let k = 0
-
     const iterate = ( fishs, surfers ) => {
 
-        k ++
-
-        if ( k % 100 == 1 ) {
-
-        }
-
-        fishs.map( fish => {
+        return fishs.map( fish => {
 
             let ax = 0
             let ay = 0
@@ -66,6 +58,15 @@ export const create = ( state, { bus } ) => {
 
                 ax += dx/l * f
                 ay += dy/l * f
+
+                if ( l < 10 ){
+                    // change honey pot
+                    honeyPots.length=0
+                    honeyPots.push({
+                        x: Math.random() * 180 - 90,
+                        y: surfers[ 0 ] ? surfers[ 0 ].position.y + Math.random() * 60 + 40 : 0,
+                    })
+                }
             })
 
             // fishs.forEach( o => {
@@ -97,5 +98,5 @@ export const create = ( state, { bus } ) => {
 
     state.fishs = fishs
 
-    bus.on('loop', () => state.fishs = iterate( state.fishs || [], state.surfers ) )
+    bus.on('loop', () => state.fishs = iterate( state.fishs, state.surfers ) )
 }

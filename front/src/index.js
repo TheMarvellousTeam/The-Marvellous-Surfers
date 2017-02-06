@@ -4,20 +4,21 @@ import 'style-loader!css-loader!./style.css'
 import * as config              from './config'
 
 import {create as createController}     from './service/controller'
-import {create as createCom}            from './service/com'
+import {create as createCom}            from './service/fake_com'
 import {create as createRenderer}       from './service/renderer'
 import {create as createBus}            from './service/bus'
 
 import {create as createIoHandler}      from './handler/io'
 import {create as createInputHandler}   from './handler/input'
 import {create as createRenderHandler}  from './handler/render'
+import {create as createVrButtonhandler} from './handler/ui/vrButton'
 import {create as createSwarmHandler}    from './handler/swarm'
 import {create as createInterpolationHandler}  from './handler/interpolate'
 
 import {create as createMenu, setVisible as setVisibleMenu}         from './handler/ui/menu'
 
 // will be uncommented to build the standalone ( #yolo )
-// #standalone require('../../back/src').create( require('../../back/src/config') )
+require('../../back/src').create( require('../../back/src/config') )
 
 // bootsrap
 const state   = window.state = {
@@ -58,7 +59,8 @@ const service = {}
                 createMenu( state, service ),
                 createRenderHandler( state, service ),
                 createInterpolationHandler( state, service ),
-                // createSwarmHandler( state, service ),
+                createVrButtonhandler( state, service ),
+                createSwarmHandler( state, service ),
 
             ])
         })

@@ -17,7 +17,7 @@ export const create = () => {
     )
 
     const mouseHandler = event =>
-        control.mx = getPointerX(event) / width
+        control.mx = 0 //getPointerX(event) / width * 2 -1
 
     document.body.addEventListener('mousemove', mouseHandler )
     document.body.addEventListener('touchmove', mouseHandler )

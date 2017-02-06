@@ -1,4 +1,4 @@
-import {create as createCom}    from './service/com'
+import {create as createCom}    from './service/fake_com'
 import regeneratorRuntime       from 'regenerator-runtime'
 
 console.log('starting ...')

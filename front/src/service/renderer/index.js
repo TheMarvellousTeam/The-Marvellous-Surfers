@@ -89,10 +89,17 @@ export const create = (config = {}) => {
     const attached = () =>
         !!renderer.domElement.parentNode
 
-    const setVr = x =>
+    const setVr = x => {
         vr = x
+
+        const container = document.getElementById('mainScene')
+        const {width, height} = container.getBoundingClientRect()
+        setSize( width*ratio, height*ratio )
+    }
+
+    const getVr = () => vr
 
     detach()
 
-    return Promise.resolve({ scene, camera, attach, detach, attached, setVr })
+    return Promise.resolve({ scene, camera, attach, detach, attached, setVr, getVr })
 }
