@@ -9,6 +9,7 @@ import {create as createRenderer}       from './service/renderer'
 import {create as createBus}            from './service/bus'
 
 import {create as createIoHandler}      from './handler/io'
+import {create as createMusicHandler}   from './handler/music'
 import {create as createInputHandler}   from './handler/input'
 import {create as createRenderHandler}  from './handler/render'
 import {create as createVrButtonhandler} from './handler/ui/vrButton'
@@ -54,6 +55,7 @@ const service = {}
 
             Promise.all([
 
+                createMusicHandler( state, service ),
                 createIoHandler( state, service ),
                 createInputHandler( state, service ),
                 createMenu( state, service ),

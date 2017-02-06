@@ -25,7 +25,7 @@ module.exports = {
             },
 
             {
-                test: /\.(eot|ttf|woff|woff2|svg|gif|jpg|png|bmp)$/,
+                test: /\.(eot|ttf|woff|woff2|svg|gif|jpg|png|bmp|mp3)$/,
                 use: `file-loader?name=${ production ? '' : '[name]-'}[hash:8].[ext]`,
             },
         ],
