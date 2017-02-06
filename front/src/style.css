@@ -181,8 +181,14 @@ body {
 }
 
 
-#vrButtonContainer{
+#vrButton{
     position: absolute;
     right: 10px;
     bottom: 10px;
+    cursor: pointer;
+}
+#vrButton > svg {
+    width: 50px;
+    height: 50px;
+    fill: #fff;
 }

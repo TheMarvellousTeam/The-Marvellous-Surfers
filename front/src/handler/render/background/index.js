@@ -11,7 +11,7 @@ export const create = ( state, { renderer, bus } ) => {
 
     renderer.scene.add( container )
     container.name = 'ground'
-    container.position.z = -26
+    container.position.z = -20
 
     const l = 700
 

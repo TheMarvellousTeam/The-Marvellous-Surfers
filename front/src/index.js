@@ -4,7 +4,7 @@ import 'style-loader!css-loader!./style.css'
 import * as config              from './config'
 
 import {create as createController}     from './service/controller'
-import {create as createCom}            from './service/fake_com'
+import {create as createCom}            from './service/com'
 import {create as createRenderer}       from './service/renderer'
 import {create as createBus}            from './service/bus'
 
@@ -18,7 +18,7 @@ import {create as createInterpolationHandler}  from './handler/interpolate'
 import {create as createMenu, setVisible as setVisibleMenu}         from './handler/ui/menu'
 
 // will be uncommented to build the standalone ( #yolo )
-require('../../back/src').create( require('../../back/src/config') )
+// #standalone require('../../back/src').create( require('../../back/src/config') )
 
 // bootsrap
 const state   = window.state = {
