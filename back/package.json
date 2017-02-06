@@ -2,6 +2,7 @@
     "name": "back",
     "version": "0.0.1",
     "dependencies": {
+        "express"               : "*",
         "engine.io"             : "~1.8.0",
         "regenerator-runtime"   : "~0.10.0"
     },
@@ -21,7 +22,7 @@
 
         "build"                 : "rm -rf lib && babel --out-dir lib --ignore node_modules/**/*.js,script/*.js ./src",
 
-        "prepare:heroku"        : "npm run build && cp package.json lib/package.json && echo web: node -e \"require('./index').create(require('./config'))\" > lib/Procfile",
+        "prepare:heroku"        : "npm run build && cp package.json lib/package.json && echo web: node -e \"require('./index').create(require('./config'))\" > lib/Procfile && cp -r ../front/dist lib",
         "deploy:heroku"         : "cd lib && git init && git remote add heroku https://git.heroku.com/still-stream-11078.git && git add . && git commit -m \":fish:\" && git push --force heroku master",
         "log:heroku"            : "heroku logs --tail --app still-stream-11078"
     }

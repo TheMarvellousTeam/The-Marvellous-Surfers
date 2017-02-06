@@ -20,17 +20,6 @@ front-build:
                 HOME=$YARN_CACHE yarn --pure-lockfile
 
         - script:
-            name: build multi
-            cwd: front
-            code: yarn run build
-
-        - script:
-            name: bundle multi
-            code: |
-                mkdir dist
-                mv front/dist/* dist
-
-        - script:
             name: prepare standalone
             code: node script/prepare_standalone.js
 
@@ -39,14 +28,10 @@ front-build:
             cwd: front
             code: yarn run build
 
-        - script:
-            name: bundle standalone
-            code: |
-                mkdir dist/standalone
-                mv front/dist/* dist/standalone
 
 front-deploy:
     steps:
         - takuma7/gh-pages:
+            cwd: front
             token: $GH_TOKEN
             basedir: ./dist
