@@ -29,6 +29,11 @@ front-build:
 
 front-deploy:
     steps:
+
+        - script:
+            name: copy video
+            code: cp doc/asset/intro.mp4 ./front/dist
+
         - takuma7/gh-pages:
             cwd: front
             token: $GH_TOKEN
