@@ -1,4 +1,4 @@
-box: node
+box: node:7
 
 front-build:
     steps:
@@ -7,7 +7,6 @@ front-build:
             name: install dependencies with yarn ( front )
             cwd: front
             code: |
-                npm install -g yarn --quiet --depth 0
                 export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
                 HOME=$YARN_CACHE yarn --pure-lockfile
 
@@ -15,7 +14,6 @@ front-build:
             name: install dependencies with yarn ( back )
             cwd: back
             code: |
-                npm install -g yarn --quiet --depth 0
                 export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
                 HOME=$YARN_CACHE yarn --pure-lockfile
 
